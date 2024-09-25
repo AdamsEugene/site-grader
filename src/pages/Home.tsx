@@ -10,7 +10,7 @@ export default function Home() {
 
       <div className="bg-green-50 py-20">
         <div className="m-auto w-full max-w-md space-y-4 text-center">
-          <h1 className="text-3xl font-bold">Boost Your Site's Performance</h1>
+          <h1 className="text-3xl font-bold">Boost Your Site's Performance.</h1>
 
           <p>
             Get AI-generated recommendations, benchmarked across 1,000+
