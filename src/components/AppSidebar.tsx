@@ -2,6 +2,7 @@ import { FcDoughnutChart } from "react-icons/fc";
 import { MdChevronRight } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { PageDetailsProp } from "./Dashboard/AppTitlebar";
+import GaussianDistributionChart from "./Dashboard/GaussianDistributionChart";
 
 interface AppSidebarProps {
   className?: string;
@@ -16,15 +17,17 @@ export default function AppSidebar({
 }: AppSidebarProps) {
   return (
     <div
-      className={`p-2 bg-white sm:bg-emerald-700 sm:text-white text-gray-800 space-y-4 text-center rounded-lg w-full max-w-[250px] lg:max-w-[300px] ${className}`}
+      className={`p-2 bg-white sm:bg-emerald-700 sm:text-white text-gray-800 space-y-4 text-center rounded-lg w-full max-w-[250px] lg:max-w-[300px] overflow-hidden ${className}`}
     >
       <p className="text-lg font-semibold">Your Site's Diagnostic</p>
       <Link to={"fb.com"} className="text-sm font-normal text-slate-200">
         https://thejellybee.com
       </Link>
-
       <div className="bg-transparent/10 h-32 rounded-lg w-full p-3">
         <p>Overall Score</p>
+      </div>
+      <div>
+        <GaussianDistributionChart />
       </div>
 
       <div>
