@@ -56,7 +56,7 @@ export default function Dashboard() {
             activePageNumber === 0 ? "hidden sm:flex" : ""
           } flex-col px-4 w-full overflow-hidden`}
         >
-          <AppModal visible={true} />
+          {/* <AppModal visible={true} /> */}
 
           <div
             className={`${
