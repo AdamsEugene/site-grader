@@ -34,6 +34,7 @@ const recommendations = [
 
 export default function Dashboard() {
   const [activePage, setActivePageNumber] = useState(1);
+
   return (
     <div className=" text-sm">
       <AppNavbar2 />
@@ -46,8 +47,14 @@ export default function Dashboard() {
             activePageNumber={(number) => setActivePageNumber(number)}
           />
 
+          {/* Add a conditional rendering based on activePage */}
           <div className="flex w-full pt-5">
-            <div className="me-3 w-1/2">ad</div>
+            {activePage === 1 && (
+              <div className="me-3 w-1/2">This is content for page 1</div>
+            )}
+            {activePage === 2 && (
+              <div className="me-3 w-1/2">This is content for page 2</div>
+            )}
 
             <div className="flex flex-col w-1/2 pb-10">
               <div className="rounded-lg shadow divide-y">
