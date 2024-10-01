@@ -77,7 +77,8 @@ export default function Dashboard() {
                 Was this helpful?{" "}
                 <AppButton
                   label="No"
-                  leftIcon={<MdClose className="me-1 text-red-700" />}
+                  left
+                  Icon={<MdClose className="me-1 text-red-700" />}
                   className="p-1 px-2 mx-2"
                 />{" "}
                 <AppButton
