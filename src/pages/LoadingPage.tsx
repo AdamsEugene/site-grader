@@ -1,4 +1,4 @@
-import { BsStars } from "react-icons/bs";
+// import { BsStars } from "react-icons/bs";
 import AppNavbar from "../components/AppNavbar";
 import AppProgressBar from "../components/AppProgressBar";
 
@@ -11,7 +11,7 @@ export default function LoadingPage() {
         <div className="flex flex-col items-center space-y-4 w-full">
           <div className="flex">
             <div className="bg-emerald-700 p-2">
-              <BsStars color="white" size={25} />
+              {/* <BsStars color="white" size={25} /> */}
             </div>
           </div>
           <AppProgressBar

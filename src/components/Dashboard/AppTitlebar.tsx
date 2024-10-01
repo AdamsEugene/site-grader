@@ -12,8 +12,6 @@ export interface PageDetailsProp {
   title: string;
   description: string;
   rating: number;
-<<<<<<< HEAD
-<<<<<<< HEAD
   recommendations?: {
     id: number;
     title: string;
@@ -24,24 +22,6 @@ export interface PageDetailsProp {
       code: string;
     }[];
   }[];
-=======
-  recommendations?: { id: number; title: string; description: string }[];
->>>>>>> 4ecc786 (dashboard progress)
-=======
-  recommendations?: { id: number; title: string; description: string }[];
-=======
-  recommendations?: {
-    id: number;
-    title: string;
-    description: string | string[];
-    snippets?: {
-      type: "original" | "recommended";
-      language: string;
-      code: string;
-    }[];
-  }[];
->>>>>>> 6b582f9 (other pages added)
->>>>>>> 29d076a (other pages added)
 }
 
 export default function AppTitlebar({

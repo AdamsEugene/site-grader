@@ -38,7 +38,7 @@ const steps = [
 
 export default function Form1() {
   const [activeStep, setActiveStep] = useState(1);
-  const [selectedOffers, setSelectedOffers] = useState<string[] | null>();
+  const [selectedOffers, setSelectedOffers] = useState<string[]>([]);
 
   const handleOfferClick = (offer: string) => {
     if (selectedOffers?.includes(offer)) {
@@ -50,6 +50,7 @@ export default function Form1() {
       ...(prevSelectedOffers ?? []),
       offer,
     ]);
+    handleNextClick();
   };
 
   const navigate = useNavigate();
@@ -58,7 +59,7 @@ export default function Form1() {
     setActiveStep(activeStep < steps.length ? activeStep + 1 : steps.length);
 
     if (activeStep === steps.length) {
-      navigate({ pathname: "/dashboard" });
+      navigate({ pathname: "/" });
     }
   };
 
@@ -102,9 +103,9 @@ export default function Form1() {
       <AppFooter />
       <div className="px-3 sm:hidden mx-auto grow-1 py-3 w-full max-w-sm space-y-4">
         <AppButton
-          label="Next"
+          label="Exit"
           className="border-0 text-emerald-700 disabled:text-gray-400 bg-gray-200 w-full"
-          disabled
+          // disabled={selectedOffers.length < 1}
           onClick={handleNextClick}
         />
         <AppButton
