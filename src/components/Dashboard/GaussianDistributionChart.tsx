@@ -68,10 +68,10 @@ const BellCurveChart = () => {
       {
         label: "Above 69.7%",
         data: afterThreshold, // #f2f2f2 shaded area data
-        borderColor: "#00523D",
+        borderColor: "#02221A",
         borderWidth: 2,
         fill: true,
-        backgroundColor: "#00523D", // Fill with #f2f2f2 for the remaining area
+        backgroundColor: "#9e2331", // Fill with #f2f2f2 for the remaining area
         tension: 0.4, // Makes the line smooth
         pointBackgroundColor: "white",
         pointRadius: 0,
@@ -96,9 +96,7 @@ const BellCurveChart = () => {
     scales: {
       x: {
         ticks: { color: "white" },
-        grid: {
-          display: false, // Disable default grid lines for the x-axis
-        },
+        grid: { display: false },
       },
       y: {
         display: false, // Hide Y-axis entirely
@@ -107,36 +105,6 @@ const BellCurveChart = () => {
     plugins: {
       legend: { display: false }, // No need for the legend
       tooltip: { enabled: false }, // Disable tooltips
-    },
-    animation: false as const, // Explicitly set animation to false
-  };
-
-  // Custom plugin to draw lines from the base to the curve
-  const customPlugin = {
-    id: "customLineDrawing",
-    afterDatasetsDraw: (chart: ChartJS) => {
-      // Provide the proper type for the chart parameter
-      const { ctx, scales } = chart;
-      const xAxis = scales.x;
-      const yAxis = scales.y;
-
-      ctx.save();
-      ctx.strokeStyle = "#02221A"; // Line color
-      ctx.lineWidth = 2; // Line thickness
-
-      // Loop through the curve data and draw the custom lines
-      curveData.forEach((point) => {
-        const x = xAxis.getPixelForValue(point.x);
-        const y = yAxis.getPixelForValue(point.y);
-
-        // Draw line from x-axis to the curve
-        ctx.beginPath();
-        ctx.moveTo(x, yAxis.bottom); // Start from x-axis base
-        ctx.lineTo(x, y); // End at the curve point
-        ctx.stroke();
-      });
-
-      ctx.restore();
     },
   };
 
@@ -151,7 +119,7 @@ const BellCurveChart = () => {
       <h3 style={{ color: "white", textAlign: "center", fontWeight: "bold" }}>
         69.7% Average
       </h3>
-      <Line data={data} options={options} plugins={[customPlugin]} />
+      <Line data={data} options={options} />
     </div>
   );
 };
