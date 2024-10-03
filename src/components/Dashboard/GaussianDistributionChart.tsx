@@ -71,7 +71,7 @@ const BellCurveChart = () => {
         borderColor: "#02221A",
         borderWidth: 2,
         fill: true,
-        backgroundColor: "#9e2331", // Fill with #f2f2f2 for the remaining area
+        backgroundColor: "#02221A", // Fill with #f2f2f2 for the remaining area
         tension: 0.4, // Makes the line smooth
         pointBackgroundColor: "white",
         pointRadius: 0,
