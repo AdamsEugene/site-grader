@@ -5,7 +5,7 @@ export default [
     pageNumber: 1,
     title: "User Experience",
     description: "Apply the recommendations to improve your site's usability.",
-    rating: 45,
+    rating: 25,
     recommendations: [
       {
         id: 1,
@@ -37,7 +37,7 @@ export default [
     pageNumber: 2,
     title: "Code Quality",
     description: "Apply the recommendations to improve your site's usability.",
-    rating: 45,
+    rating: 62,
     recommendations: [
       {
         id: 1,
@@ -98,7 +98,7 @@ export default [
     pageNumber: 3,
     title: "Site Speed",
     description: "Apply the recommendations to improve your site's usability.",
-    rating: 45,
+    rating: 83,
     recommendations: [
       {
         id: 1,

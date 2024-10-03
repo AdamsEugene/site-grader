@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { FcDoughnutChart } from "react-icons/fc";
+import DoughnutChart from "./DoughnutChart";
 
 interface AppTitlebarProps {
   activePageNumber?: (number: number) => void;
@@ -24,6 +24,19 @@ export interface PageDetailsProp {
   }[];
 }
 
+export const PageTitle = ({
+  description,
+  title,
+}: {
+  description: string;
+  title: string;
+}) => (
+  <div className="py-6 border-b sm:border-0">
+    <h1 className="text-2xl font-bold">{title}</h1>
+    <p>{description}</p>
+  </div>
+);
+
 export default function AppTitlebar({
   activePageNumber,
   pages,
@@ -40,7 +53,7 @@ export default function AppTitlebar({
 
   return (
     <div>
-      <div className="hidden sm:flex font-bold space-x-4 border-b">
+      <div className="hidden sm:flex font-bold px-4 space-x-4 border-b">
         {pages.map((page, index) => (
           <div
             key={index}
@@ -52,7 +65,9 @@ export default function AppTitlebar({
           >
             <div className="flex items-center pb-2">
               <span className="py-2 inline-block">{page.title}</span>{" "}
-              <FcDoughnutChart size={30} className="ms-2" />
+              <div className="h-10 w-10 ms-2">
+                <DoughnutChart labelClassName="text-[12px]" />
+              </div>
             </div>
 
             {activePage?.pageNumber === page.pageNumber && (
@@ -62,10 +77,7 @@ export default function AppTitlebar({
         ))}
       </div>
 
-      <div className="py-6 border-b sm:border-0">
-        <h1 className="text-2xl font-bold">{activePage?.title}</h1>
-        <p>{activePage.description}</p>
-      </div>
+      {/* <PageTitle title={ac}/> */}
     </div>
   );
 }
