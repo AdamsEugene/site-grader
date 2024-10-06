@@ -80,6 +80,7 @@ export default function LoadingPage() {
       // Cleanup function to close EventSource on component unmount
       return () => {
         if (eventSource) {
+          console.log("closing this now");
           eventSource.close(); // Close the EventSource if it exists
         }
       };

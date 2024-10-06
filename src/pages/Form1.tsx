@@ -61,8 +61,8 @@ export default function Form1() {
     if (activeStep < steps.length) {
       setActiveStep(activeStep + 1);
     } else {
-      const averageRevenue = "Example Revenue"; // Replace with actual logic
-      const email = "example@example.com"; // Replace with actual logic
+      const averageRevenue = "Example Revenue";
+      const email = "example@example.com";
 
       console.log("Navigating to LoadingPage with:", {
         url: location.state?.url,
@@ -70,10 +70,10 @@ export default function Form1() {
         average_revenue: averageRevenue,
         email: email,
       });
-      // When all steps are completed, navigate to the LoadingPage or any other page
+      // navigate to loadingPage when all steps are completed
       navigate("/loadingPage", {
         state: {
-          url: location.state?.url, // Retain the site URL from Home.tsx
+          url: location.state?.url, // Retaining the url from previous page
           product_service: selectedOffers,
           average_service: " ",
           email: "",
