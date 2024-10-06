@@ -2,7 +2,7 @@ import { useState } from "react";
 import AppButton from "../components/AppButton";
 import AppNavbar from "../components/AppNavbar";
 import AppFooter from "../components/AppFooter";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const steps = [
   {
@@ -10,7 +10,7 @@ const steps = [
     question: "What kinds of products and services do you offer on your site?",
     options: [
       "Arts and crafts",
-      " Baby and kids",
+      "Baby and kids",
       "Books, music, and video",
       "Business equipment and supplies",
       "Clothing",
@@ -31,7 +31,7 @@ const steps = [
       "$500 - $1M",
       "$1M - $5M",
       "$5M - $10M",
-      "$10M",
+      "$10M+",
     ],
   },
 ];
@@ -39,6 +39,8 @@ const steps = [
 export default function Form1() {
   const [activeStep, setActiveStep] = useState(1);
   const [selectedOffers, setSelectedOffers] = useState<string[]>([]);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const handleOfferClick = (offer: string) => {
     if (selectedOffers?.includes(offer)) {
@@ -50,16 +52,33 @@ export default function Form1() {
       ...(prevSelectedOffers ?? []),
       offer,
     ]);
+
+    // Automatically go to the next step
     handleNextClick();
   };
 
-  const navigate = useNavigate();
-
   const handleNextClick = () => {
-    setActiveStep(activeStep < steps.length ? activeStep + 1 : steps.length);
+    if (activeStep < steps.length) {
+      setActiveStep(activeStep + 1);
+    } else {
+      const averageRevenue = "Example Revenue"; // Replace with actual logic
+      const email = "example@example.com"; // Replace with actual logic
 
-    if (activeStep === steps.length) {
-      navigate({ pathname: "/" });
+      console.log("Navigating to LoadingPage with:", {
+        url: location.state?.url,
+        product_service: selectedOffers,
+        average_revenue: averageRevenue,
+        email: email,
+      });
+      // When all steps are completed, navigate to the LoadingPage or any other page
+      navigate("/loadingPage", {
+        state: {
+          url: location.state?.url, // Retain the site URL from Home.tsx
+          product_service: selectedOffers,
+          average_service: " ",
+          email: "",
+        },
+      });
     }
   };
 
@@ -90,9 +109,6 @@ export default function Form1() {
                 label={offer}
                 className="w-full text-left"
                 primary={selectedOffers?.includes(offer)}
-                //   className={`w-full text-left ${
-                //     selectedOffers?.includes(offer) && "bg-emerald-700"
-                //   }`}
                 onClick={() => handleOfferClick(offer)}
               />
             ))}
@@ -105,7 +121,6 @@ export default function Form1() {
         <AppButton
           label="Exit"
           className="border-0 text-emerald-700 disabled:text-gray-400 bg-gray-200 w-full"
-          // disabled={selectedOffers.length < 1}
           onClick={handleNextClick}
         />
         <AppButton
