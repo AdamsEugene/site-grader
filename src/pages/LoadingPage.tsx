@@ -47,8 +47,12 @@ export default function LoadingPage() {
 
         // Initialize EventSource to listen for updates using the jobId
         eventSource = new EventSource(
-          `https://sitegrade.heatmapcore.com/api/${newJobId}`
+          `https://sitegrade.heatmapcore.com/api/${newJobId}`,
+          {
+            withCredentials: true,
+          }
         );
+
         console.log(eventSource.onmessage);
 
         eventSource.onmessage = (event) => {
@@ -99,7 +103,7 @@ export default function LoadingPage() {
             progress={progress}
             className="rounded-full overflow-hidden w-full bg-gray-300/50"
           />
-          <p className="font-semibold text-sm">CRO Hack: [Enter CRO Hack]...</p>
+          <p className="font-semibold text-sm">Progress update:</p>
           <p>URL: {url}</p>
           <p>Product/Service: {product_service}</p>
           <p>Average Revenue: {average_revenue}</p>
