@@ -47,10 +47,7 @@ export default function LoadingPage() {
 
         // Initialize EventSource to listen for updates using the jobId
         eventSource = new EventSource(
-          `https://sitegrade.heatmapcore.com/api/${newJobId}`,
-          {
-            withCredentials: true,
-          }
+          `https://sitegrade.heatmapcore.com/api/progress/${newJobId}`
         );
 
         console.log(eventSource.onmessage);
@@ -58,7 +55,7 @@ export default function LoadingPage() {
         eventSource.onmessage = (event) => {
           const data = JSON.parse(event.data);
           setProgress(data.progress); // Assuming the server sends { "progress": 50 }
-
+          console.log(data.progress);
           // Stop listening if progress is complete
           if (data.progress >= 100) {
             eventSource?.close(); // Close the connection when done
