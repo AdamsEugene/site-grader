@@ -55,7 +55,7 @@ export default function LoadingPage() {
         eventSource.onmessage = (event) => {
           const data = JSON.parse(event.data);
           setProgress(data.progress); // Assuming the server sends { "progress": 50 }
-          console.log(data.progress);
+          console.log(data);
           // Stop listening if progress is complete
           if (data.progress >= 100) {
             eventSource?.close(); // Close the connection when done
