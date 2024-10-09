@@ -17,7 +17,7 @@ import useFetchAndListen from "../../hooks/useFetchAndListen";
 import { useLocation } from "react-router-dom";
 
 const siteData = {
-  site_url: "https://www.heatmap.com",
+  site_url: "https://thejellybee.com",
   product_service: "Heatmap Provider",
   average_revenue: 1900,
   email: "support@heatmap.com",
