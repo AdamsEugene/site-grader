@@ -14,6 +14,7 @@ import { FaChevronLeft } from "react-icons/fa";
 import pages from "../../lib/pageData";
 import useSiteAnalysis from "../../hooks/useSiteAnalysis";
 import useFetchAndListen from "../../hooks/useFetchAndListen";
+import { useLocation } from "react-router-dom";
 
 const siteData = {
   site_url: "https://www.heatmap.com",
@@ -28,7 +29,14 @@ export default function Dashboard() {
 
   const gradingUrl = "https://sitegrade.heatmapcore.com/api/validate";
 
-  const { message, error, update } = useFetchAndListen(gradingUrl, siteData);
+  const location = useLocation();
+
+  // console.log(location.state);
+
+  const { message, error, update } = useFetchAndListen(
+    gradingUrl,
+    location.state
+  );
 
   const { data } = useSiteAnalysis(message);
 
@@ -38,7 +46,7 @@ export default function Dashboard() {
         progress={message?.process_stage}
         error={error}
         update={update}
-        siteData={siteData}
+        siteData={location.state}
       />
     );
 
