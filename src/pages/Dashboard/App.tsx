@@ -132,12 +132,7 @@ export default function Dashboard() {
                   activeSection === 2 ? "" : "hidden md:block"
                 }`}
               >
-                <img
-                  src={
-                    "https://configs-node.s3.us-west-2.amazonaws.com/configs-response/alc/screenshots/www.heatmap"
-                  }
-                  className="m-auto"
-                />
+                <img src={message?.screenshot_s3_uri} className="m-auto" />
               </div>
 
               <div
