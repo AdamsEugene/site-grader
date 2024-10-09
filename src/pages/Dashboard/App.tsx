@@ -63,7 +63,7 @@ export default function Dashboard() {
         />
       </div>
 
-      <div className="h-full flex w-full">
+      <div className="h-full flex w-full px-3">
         <AppSidebar
           pages={pages}
           className={`${
