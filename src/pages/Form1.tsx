@@ -2,7 +2,7 @@ import { useState } from "react";
 import AppButton from "../components/AppButton";
 import AppNavbar from "../components/AppNavbar";
 import AppFooter from "../components/AppFooter";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const steps = [
   {
@@ -10,7 +10,7 @@ const steps = [
     question: "What kinds of products and services do you offer on your site?",
     options: [
       "Arts and crafts",
-      " Baby and kids",
+      "Baby and kids",
       "Books, music, and video",
       "Business equipment and supplies",
       "Clothing",
@@ -31,14 +31,16 @@ const steps = [
       "$500 - $1M",
       "$1M - $5M",
       "$5M - $10M",
-      "$10M",
+      "$10M+",
     ],
   },
 ];
 
 export default function Form1() {
   const [activeStep, setActiveStep] = useState(1);
-  const [selectedOffers, setSelectedOffers] = useState<string[] | null>();
+  const [selectedOffers, setSelectedOffers] = useState<string[]>([]);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const handleOfferClick = (offer: string) => {
     if (selectedOffers?.includes(offer)) {
@@ -50,15 +52,33 @@ export default function Form1() {
       ...(prevSelectedOffers ?? []),
       offer,
     ]);
+
+    // Automatically go to the next step
+    handleNextClick();
   };
 
-  const navigate = useNavigate();
-
   const handleNextClick = () => {
-    setActiveStep(activeStep < steps.length ? activeStep + 1 : steps.length);
+    if (activeStep < steps.length) {
+      setActiveStep(activeStep + 1);
+    } else {
+      const averageRevenue = "Example Revenue";
+      const email = "example@example.com";
 
-    if (activeStep === steps.length) {
-      navigate({ pathname: "/dashboard" });
+      console.log("Navigating to LoadingPage with:", {
+        url: location.state?.url,
+        product_service: selectedOffers,
+        average_revenue: averageRevenue,
+        email: email,
+      });
+      // navigate to loadingPage when all steps are completed
+      navigate("/dashboard", {
+        state: {
+          url: location.state?.url, // Retaining the url from previous page
+          product_service: selectedOffers,
+          average_service: " ",
+          email: "",
+        },
+      });
     }
   };
 
@@ -89,9 +109,6 @@ export default function Form1() {
                 label={offer}
                 className="w-full text-left"
                 primary={selectedOffers?.includes(offer)}
-                //   className={`w-full text-left ${
-                //     selectedOffers?.includes(offer) && "bg-emerald-700"
-                //   }`}
                 onClick={() => handleOfferClick(offer)}
               />
             ))}
@@ -102,9 +119,8 @@ export default function Form1() {
       <AppFooter />
       <div className="px-3 sm:hidden mx-auto grow-1 py-3 w-full max-w-sm space-y-4">
         <AppButton
-          label="Next"
+          label="Exit"
           className="border-0 text-emerald-700 disabled:text-gray-400 bg-gray-200 w-full"
-          disabled
           onClick={handleNextClick}
         />
         <AppButton
