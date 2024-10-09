@@ -50,10 +50,10 @@ const useFetchAndListen = (url: string, requestBody: object) => {
 
           eventSource.onerror = () => {
             if (eventSource.readyState === EventSource.CLOSED) {
-              setError("EventSource connection closed");
+              setError("Listening connection closed");
               setUpdate(null);
             } else {
-              setError("EventSource encountered an error, Retrying...");
+              setError("Listening encountered an error, Retrying...");
               setUpdate(null);
             }
           };
@@ -93,8 +93,8 @@ const useFetchAndListen = (url: string, requestBody: object) => {
     return () => {
       if (eventSourceRef.current) {
         eventSourceRef.current.close();
-        console.log("EventSource connection closed on cleanup.");
-        setError("EventSource connection closed on cleanup.");
+        console.log("Listening connection closed on cleanup.");
+        setError("Listening connection closed on cleanup.");
         setUpdate(null);
       }
     };

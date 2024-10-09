@@ -16,12 +16,12 @@ import useSiteAnalysis from "../../hooks/useSiteAnalysis";
 import useFetchAndListen from "../../hooks/useFetchAndListen";
 import { useLocation } from "react-router-dom";
 
-const siteData = {
-  site_url: "https://thejellybee.com",
-  product_service: "Heatmap Provider",
-  average_revenue: 1900,
-  email: "support@heatmap.com",
-};
+// const siteData = {
+//   site_url: "https://thejellybee.com",
+//   product_service: "Heatmap Provider",
+//   average_revenue: 1900,
+//   email: "support@heatmap.com",
+// };
 
 export default function Dashboard() {
   const [activePageNumber, setActivePageNumber] = useState(1);
@@ -39,7 +39,7 @@ export default function Dashboard() {
   );
 
   const { data } = useSiteAnalysis(message);
-
+  console.log(data);
   if (!data)
     return (
       <LoadingPage
