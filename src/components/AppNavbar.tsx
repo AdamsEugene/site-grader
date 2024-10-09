@@ -27,7 +27,7 @@ export default function AppNavbar({
         <h4 className="font-medium">AI Insights</h4>
         {showControls && (
           <AppButton
-            label="Next"
+            label="Exit"
             className="hidden sm:block"
             onClick={onNextClick}
           />

@@ -12,7 +12,7 @@ export default function AppProgressBar({
   const clampedProgress = Math.min(100, Math.max(0, progress));
 
   return (
-    <div className={`relative w-full bg-transparent ${className}`}>
+    <div className={`relative w-full bg-gray-300 ${className}`}>
       <div
         className="bg-emerald-400 h-1 transition-all duration-300"
         style={{ width: `${clampedProgress}%` }}
