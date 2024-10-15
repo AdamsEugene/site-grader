@@ -39,7 +39,6 @@ export default function Dashboard() {
   // }
 
   const { data } = useSiteAnalysis(message);
-  console.log(data);
   if (!data)
     return (
       <LoadingPage
