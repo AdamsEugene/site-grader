@@ -2,7 +2,9 @@
 import AppNavbar from "../components/AppNavbar";
 import AppProgressBar from "../components/AppProgressBar";
 import siteIcon from "../assets/images/sitegrader_icon.png";
-// import useFetchAndListen from "../hooks/useFetchAndListen";
+import { useEffect, useState } from "react";
+import AppModal, { IModalData } from "../components/AppModal";
+import { useLocation } from "react-router-dom";
 
 interface SiteDataProp {
   site_url: string;
@@ -22,30 +24,38 @@ export default function LoadingPage({
   update?: string | null;
   siteData: SiteDataProp;
 }) {
+  const [modalVisibility, setModalVisibility] = useState(false);
   // const location = useLocation();
 
   // Destructure the form data passed via state
   const {
     site_url = "",
-    product_service = "Default Product Service",
-    average_revenue = 0,
-    email = "",
+    // product_service = "Default Product Service",
+    // average_revenue = 0,
+    // email = "",
   } = siteData;
 
-  // useEffect(() => {
-  //   console.log(location);
-  // }, [location]);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setModalVisibility(true);
+    }, 30000); // 30 seconds
 
-  // const gradingUrl = "https://sitegrade.heatmapcore.com/api/validate";
+    return () => {
+      clearTimeout(timer);
+    };
+  }, []);
 
-  // const { message, error, update } = useFetchAndListen(gradingUrl, siteData);
+  const location = useLocation();
 
-  // useEffect(() => {
-  //   // console.log("data received: ");
-  //   if (message?.process_stage) {
-  //     setProgress(message.process_stage);
-  //   }
-  // }, [message]);
+  const handleModalSubmit = (values: IModalData) => {
+    console.log({
+      ...values,
+      id: values.business_email,
+      annual_revenue: location.state.average_revenue,
+      product_service: location.state.product_service,
+    });
+    setModalVisibility(false);
+  };
 
   const getProgress = () => {
     let calculatedProgress = 0;
@@ -82,6 +92,7 @@ export default function LoadingPage({
   return (
     <div className="h-screen">
       <AppNavbar />
+      <AppModal visible={modalVisibility} onSubmit={handleModalSubmit} />
       <div className="m-auto grow w-1/3 flex justify-center items-center py-32 space-y-4 text-center">
         <div className="flex flex-col items-center space-y-4 w-full">
           <img src={siteIcon} width={50} height={50} alt="" />

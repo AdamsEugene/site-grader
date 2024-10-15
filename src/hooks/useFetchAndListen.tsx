@@ -1,22 +1,14 @@
 import { useEffect, useState, useRef } from "react";
+import IMessageProp from "../interface/IMessageProp";
 
 interface FetchDataResponse {
   jobId?: string; // Define the expected shape of your response
 }
 
-export interface MessageProp {
-  url?: string;
-  id?: string;
-  status?: string;
-  timestamp?: string;
-  process_stage?: string;
-  ai_insight_s3_uri?: string;
-  screenshot_s3_uri?: string;
-  cnn_s3_uri?: string;
-}
+const gradingUrl = "https://sitegrade.heatmapcore.com/api/validate";
 
-const useFetchAndListen = (url: string, requestBody: object) => {
-  const [message, setMessage] = useState<MessageProp | null>(null);
+const useFetchAndListen = () => {
+  const [message, setMessage] = useState<IMessageProp | null>(null);
   const [update, setUpdate] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -26,12 +18,17 @@ const useFetchAndListen = (url: string, requestBody: object) => {
     const fetchDataAndListen = async () => {
       console.log("Fetching...");
       try {
-        const response = await fetch(url, {
+        const response = await fetch(gradingUrl, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(requestBody),
+          body: JSON.stringify({
+            site_url: "https://www.heatmap.com",
+            product_service: "Heatmap  Provider",
+            average_revenue: 19000,
+            email: "support@heatmap.com",
+          }),
         });
 
         if (!response.ok) {
@@ -98,7 +95,7 @@ const useFetchAndListen = (url: string, requestBody: object) => {
         setUpdate(null);
       }
     };
-  }, [url, requestBody]); // Only depend on url and requestBody
+  }, []); // Only depend on url and requestBody
 
   return { error, message, update };
 };

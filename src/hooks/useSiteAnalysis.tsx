@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { MessageProp } from "./useFetchAndListen";
+import IMessageProp from "../interface/IMessageProp";
 
 interface AnalysisDataProps {
   updated_at: string;
@@ -39,7 +39,7 @@ interface InsightProp {
 //     "https://configs-node.s3.us-west-2.amazonaws.com/configs-response/alc/cnnData/www.heatmap.json",
 // };
 
-const useSiteAnalysis = (message: MessageProp | null) => {
+const useSiteAnalysis = (message: IMessageProp | null) => {
   const [data, setData] = useState<AnalysisDataProps | null>(null);
   const [error, setError] = useState<string | null>(null);
 

@@ -16,27 +16,27 @@ import useSiteAnalysis from "../../hooks/useSiteAnalysis";
 import useFetchAndListen from "../../hooks/useFetchAndListen";
 import { useLocation } from "react-router-dom";
 
-const siteData = {
-  site_url: "https://thejellybee.com",
-  product_service: "Heatmap Provider",
-  average_revenue: 1900,
-  email: "support@heatmap.com",
-};
+// const siteData = {
+//   site_url: "https://thejellybee.com",
+//   product_service: "Heatmap Provider",
+//   average_revenue: 1900,
+//   email: "support@heatmap.com",
+// };
 
 export default function Dashboard() {
   const [activePageNumber, setActivePageNumber] = useState(1);
   const [activeSection, setActiveSection] = useState(1);
 
-  const gradingUrl = "https://sitegrade.heatmapcore.com/api/validate";
-
   const location = useLocation();
 
   // console.log(location.state);
 
-  const { message, error, update } = useFetchAndListen(
-    gradingUrl,
-    location.state
-  );
+  const { message, error, update } = useFetchAndListen();
+
+  // {
+  //   ...location.state,
+  //   average_revenue: 1900,
+  // }
 
   const { data } = useSiteAnalysis(message);
 
