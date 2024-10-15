@@ -5,6 +5,7 @@ import siteIcon from "../assets/images/sitegrader_icon.png";
 import { useEffect, useState } from "react";
 import AppModal, { IModalData } from "../components/AppModal";
 import { useLocation } from "react-router-dom";
+import OopsModal from "../components/OopsModal";
 
 interface SiteDataProp {
   site_url: string;
@@ -25,6 +26,8 @@ export default function LoadingPage({
   siteData: SiteDataProp;
 }) {
   const [modalVisibility, setModalVisibility] = useState(false);
+  const [oopsModalVisibility, setOopsModalVisibility] = useState(false);
+  const [catchError, setCatchError] = useState(false);
   // const location = useLocation();
 
   // Destructure the form data passed via state
@@ -38,12 +41,19 @@ export default function LoadingPage({
   useEffect(() => {
     const timer = setTimeout(() => {
       setModalVisibility(true);
+      setCatchError(true);
     }, 30000); // 30 seconds
 
     return () => {
       clearTimeout(timer);
     };
   }, []);
+
+  useEffect(() => {
+    if (catchError) {
+      setOopsModalVisibility(true);
+    }
+  }, [error, catchError]);
 
   const location = useLocation();
 
@@ -92,6 +102,7 @@ export default function LoadingPage({
   return (
     <div className="h-screen">
       <AppNavbar />
+      <OopsModal visible={oopsModalVisibility} />
       <AppModal visible={modalVisibility} onSubmit={handleModalSubmit} />
       <div className="m-auto grow w-1/3 flex justify-center items-center py-32 space-y-4 text-center">
         <div className="flex flex-col items-center space-y-4 w-full">

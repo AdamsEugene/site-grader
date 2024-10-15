@@ -43,13 +43,13 @@ export default function AppModal({
     return (
       <>
         <div className="absolute z-10 backdrop-blur-sm bg-white/30 h-full w-full"></div>
-        <div className="absolute py-10 pb-20 w-full flex px-4 h-full">
-          <div className="bg-emerald-700 z-10 overflow-hidden h-full max-w-lg rounded-lg m-auto text-white">
+        <div className="absolute bg-black/70 py-10 pb-20 w-full flex px-4 h-full">
+          <div className="bg-emerald-800 z-10 overflow-hidden h-full max-w-lg rounded-lg m-auto text-white">
             <div className="overflow-auto h-full p-5">
-              <p className="text-xl font-bold mb-4">Unlock Your Full Audit</p>
-              <p>
-                Enter your details to access comprehensive insights and
-                personalized recommendations to boost your site's performance.
+              <p className="text-xl font-bold mb-4">Whoops, our bad.</p>
+              <p className="text-sm">
+                Your audit is taking longer than usual. Enter your information
+                below and we’ll email you the audit when it’s ready.
               </p>
 
               <div className="mt-5 space-y-4">
