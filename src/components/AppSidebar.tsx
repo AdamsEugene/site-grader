@@ -43,7 +43,9 @@ export default function AppSidebar({
         </div>
 
         <div className="pt-5 hidden sm:block overflow-hidden">
-          <div className="bg-transparent/10 relative rounded-lg w-full">
+          <div className="bg-transparent/10 relative rounded-lg w-full flex flex-col gap-y-6">
+            <GaussianDistributionChart />
+            <GaussianDistributionChart />
             <GaussianDistributionChart />
           </div>
         </div>

@@ -90,20 +90,19 @@ export default function LoadingPage({
   };
 
   return (
-    <div className="h-screen">
+    <div className="h-screen flex flex-col justify-center">
       <AppNavbar />
       <AppModal visible={modalVisibility} onSubmit={handleModalSubmit} />
-      <div className="m-auto grow w-1/3 flex justify-center items-center py-32 space-y-4 text-center">
-        <div className="flex flex-col items-center space-y-4 w-full">
+      <div className="m-auto grow w-1/3 flex justify-center items-center space-y-4 text-center">
+        <div className="flex flex-col items-center justify-center gap-y-4 w-full">
           <img src={siteIcon} width={50} height={50} alt="" />
-          {error && !update && <p className="text-red-500">{error}</p>}
-          {update && !error && <p className="text-emerald-500">{update}</p>}
+
           <AppProgressBar
             progress={getProgress()}
             className="rounded-full overflow-hidden w-full bg-gray-300/50"
           />
-          <p className="font-semibold text-sm">Progress update:</p>
-          <p>URL: {site_url}</p>
+          {error && !update && <p className="text-red-500">{error}</p>}
+          {update && !error && <p className="text-emerald-500">{update}</p>}
         </div>
       </div>
     </div>

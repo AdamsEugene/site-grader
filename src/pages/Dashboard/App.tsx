@@ -39,7 +39,7 @@ export default function Dashboard() {
   // }
 
   const { data } = useSiteAnalysis(message);
-
+  console.log(data);
   if (!data)
     return (
       <LoadingPage
@@ -63,7 +63,7 @@ export default function Dashboard() {
         />
       </div>
 
-      <div className="h-full flex w-full">
+      <div className="h-full flex w-full px-3">
         <AppSidebar
           pages={pages}
           className={`${
