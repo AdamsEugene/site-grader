@@ -75,6 +75,7 @@ const useFetchAndListen = () => {
       setUpdate("Getting insight...");
       setError(null);
       setMessage(parsedData);
+      console.log(parsedData);
 
       // Check for stopping conditions
       if (
@@ -83,6 +84,7 @@ const useFetchAndListen = () => {
       ) {
         setUpdate("Finishing up...");
         eventSource.close(); // Stop the EventSource
+        console.log(parsedData);
         console.log("Listening has ended.");
       }
     };
