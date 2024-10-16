@@ -25,20 +25,6 @@ interface InsightProp {
   created: string;
 }
 
-// const message = {
-//   url: "https://www.heatmap.com",
-//   id: "81386cbd-a837-4bbc-bd47-159be8c6ed96",
-//   status: "completed",
-//   timestamp: "2024-10-08T16:24:18.511Z",
-//   process_stage: "report_generation",
-//   ai_insight_s3_uri:
-//     "https://configs-node.s3.us-west-2.amazonaws.com/configs-response/alc/insights/www.heatmap.json",
-//   screenshot_s3_uri:
-//     "https://configs-node.s3.us-west-2.amazonaws.com/configs-response/alc/screenshots/www.heatmap",
-//   cnn_s3_uri:
-//     "https://configs-node.s3.us-west-2.amazonaws.com/configs-response/alc/cnnData/www.heatmap.json",
-// };
-
 const useSiteAnalysis = (message: IMessageProp | null) => {
   const [data, setData] = useState<AnalysisDataProps | null>(null);
   const [error, setError] = useState<string | null>(null);

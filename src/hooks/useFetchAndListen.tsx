@@ -83,7 +83,6 @@ const useFetchAndListen = () => {
       ) {
         setUpdate("Finishing up...");
         eventSource.close(); // Stop the EventSource
-        console.log(parsedData);
         console.log("Listening has ended.");
       }
     };

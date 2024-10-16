@@ -73,6 +73,7 @@ export default function LoadingPage({
     switch (progress) {
       case "loading_site":
         calculatedProgress = (1 / 5) * 100;
+        console.log(progress.loading_site);
         break;
 
       case "ai_insight_analysis":
@@ -109,6 +110,7 @@ export default function LoadingPage({
           <img src={siteIcon} width={50} height={50} alt="" />
           {error && !update && <p className="text-red-500">{error}</p>}
           {update && !error && <p className="text-emerald-500">{update}</p>}
+
           <AppProgressBar
             progress={getProgress()}
             className="rounded-full overflow-hidden w-full bg-gray-300/50"
