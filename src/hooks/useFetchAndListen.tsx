@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import IMessageProp from "../interface/IMessageProp";
 import { useLocation } from "react-router-dom";
+import axios from "axios";
 
 interface FetchDataResponse {
   jobId?: string; // Define the expected shape of your response
@@ -25,6 +26,8 @@ const useFetchAndListen = () => {
   // Memoized function to fetch the jobId, using useCallback to avoid unnecessary re-creation
   const getJobId = useCallback(async () => {
     setIsLoading(true); // Set loading to true while fetching the jobId
+    if (!bodyData) return;
+
     try {
       const response = await fetch(gradingUrl, {
         method: "POST",
@@ -70,7 +73,7 @@ const useFetchAndListen = () => {
       }
     };
 
-    eventSource.onmessage = (sourceMessage) => {
+    eventSource.onmessage = async (sourceMessage) => {
       const parsedData = JSON.parse(sourceMessage.data);
       setUpdate("Getting insight...");
       setError(null);
@@ -85,6 +88,22 @@ const useFetchAndListen = () => {
         eventSource.close(); // Stop the EventSource
         console.log(parsedData);
         console.log("Listening has ended.");
+
+        const response = await axios.get<IMessageProp[]>(
+          `https://sitegrade.heatmapcore.com/api/reports/${parsedData.id}`
+        );
+        // console.log(parsedData.id);
+
+        const fetchedData = response.data;
+
+        try {
+          if (fetchedData) {
+            console.log("Fetched data:", fetchedData[0]);
+            setMessage(fetchedData[0]);
+          }
+        } catch (error) {
+          console.log("Error while getting reports ", error);
+        }
       }
     };
 

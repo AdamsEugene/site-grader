@@ -1,11 +1,12 @@
 import { FcDoughnutChart } from "react-icons/fc";
-import CodeSnippet from "../../components/CodeSnippet";
-import Collapsible from "../../components/Collapsible";
-import { PageDetailsProp } from "../../components/Dashboard/AppTitlebar";
+// import CodeSnippet from "../../components/CodeSnippet";
+// import Collapsible from "../../components/Collapsible";
+// import { PageDetailsProp } from "../../components/Dashboard/AppTitlebar";
 import Feedback from "../../components/Feedback";
+import { IPSIDataResponse } from "../../interface/ISiteSpeed";
 
 interface SiteSpeedProps {
-  pageData: PageDetailsProp;
+  pageData: IPSIDataResponse | null;
 }
 
 export default function SiteSpeed({ pageData }: SiteSpeedProps) {
@@ -39,20 +40,20 @@ export default function SiteSpeed({ pageData }: SiteSpeedProps) {
 
       <div className="rounded-lg shadow border p-4 divide-y w-full">
         {pageData &&
-          pageData.recommendations?.map((r, index) => (
+          pageData.data.recommendations?.map((r, index) => (
             <div key={index} className="mb-4 text-gray-800">
               <p className="font-bold mb-2">{index + 1 + ". " + r.title}</p>
-              {Array.isArray(r.description) ? (
+              {Array.isArray(r.recommendation) ? (
                 <ul className="list-disc ps-5">
-                  {r.description.map((d, index) => (
+                  {r.recommendation.map((d, index) => (
                     <li key={index}>{d}</li>
                   ))}
                 </ul>
               ) : (
-                <p>{r.description}</p>
+                <p>{r.recommendation}</p>
               )}
 
-              {r.snippets &&
+              {/* {r.snippets &&
                 r.snippets.map((snippet, index) => (
                   <div key={index} className="mt-5 rounded-lg overflow-hidden">
                     <Collapsible title={snippet.type + " code"}>
@@ -62,7 +63,7 @@ export default function SiteSpeed({ pageData }: SiteSpeedProps) {
                       />
                     </Collapsible>
                   </div>
-                ))}
+                ))} */}
             </div>
           ))}
       </div>
