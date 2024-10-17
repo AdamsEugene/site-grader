@@ -7,7 +7,7 @@ import AppTitlebar, { PageTitle } from "../../components/Dashboard/AppTitlebar";
 import { PiStarFour } from "react-icons/pi";
 import { CiImageOn } from "react-icons/ci";
 import LoadingPage from "../LoadingPage";
-import CodeQuality from "./CodeQuality";
+// import CodeQuality from "./CodeQuality";
 import SiteSpeed from "./SiteSpeed";
 import Feedback from "../../components/Feedback";
 import { FaChevronLeft } from "react-icons/fa";
@@ -38,7 +38,7 @@ export default function Dashboard() {
   //   average_revenue: 1900,
   // }
 
-  const { data } = useSiteAnalysis(message);
+  const { data, siteSpeedData } = useSiteAnalysis(message);
   if (!data)
     return (
       <LoadingPage
@@ -168,7 +168,7 @@ export default function Dashboard() {
               }`}
             >
               <div className="rounded-lg shadow border p-4 divide-y w-full">
-                <CodeQuality pageData={pages[activePageNumber - 1]} />
+                {/* <CodeQuality pageData={codeQualityData} /> */}
               </div>
 
               <Feedback
@@ -181,7 +181,7 @@ export default function Dashboard() {
                 activePageNumber === 3 ? "flex" : "hidden"
               }`}
             >
-              <SiteSpeed pageData={pages[activePageNumber - 1]} />
+              <SiteSpeed pageData={siteSpeedData} />
             </div>
           </div>
         </div>
