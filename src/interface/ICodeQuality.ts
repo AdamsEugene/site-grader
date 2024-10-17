@@ -1,48 +1,67 @@
-export interface ISiteAuditData {
+interface ISiteAuditData {
   HTML: {
-    "Structure and semantics": number;
+    StructureAndSemantics: number;
     Accessibility: number;
-    "Best practices": number;
+    BestPractices: number;
     Compatibility: number;
-    "SEO optimization": number;
+    SEOOptimization: number;
+    Explanation: string;
+    Improvement: string;
+    CodeRecommendation: {
+      OriginalCode: string;
+      RecommendedCode: string;
+      Explanation: string;
+    }[];
+    score: number;
   };
   CSS: {
-    "Code quality": number;
+    CodeQuality: number;
     Responsiveness: number;
-    "Browser compatibility": number;
+    BrowserCompatibility: number;
     Performance: number;
-    "Modern practices": number;
+    ModernPractices: number;
+    Explanation: string;
+    Improvement: string;
+    CodeRecommendation: {
+      OriginalCode: string;
+      RecommendedCode: string;
+      Explanation: string;
+    }[];
+    score: number;
   };
   JavaScript: {
-    "Code quality": number;
+    CodeQuality: number;
     Performance: number;
-    "Modern practices": number;
-    "Error handling": number;
-    "Integration with HTML/CSS": number;
+    ModernPractices: number;
+    ErrorHandling: number;
+    IntegrationWithHTMLCSS: number;
+    Explanation: string;
+    Improvement: string;
+    CodeRecommendation: {
+      OriginalCode: string;
+      RecommendedCode: string;
+      Explanation: string;
+    }[];
+    score: number;
   };
   Overall: {
     Organization: number;
     Documentation: number;
     Consistency: number;
-    "Version control": number;
-    "Best practices": number;
+    VersionControl: number;
+    BestPractices: number;
+    Explanation: string;
+    Improvement: string;
+    score: number;
   };
   Total: number;
-  Summary: {
-    Strengths: string[];
-    "Areas for Improvement": string[];
-    Recommendations: {
-      description: string;
-      before: string;
-      after: string;
-    }[];
-  };
+  Summary: string;
 }
 
 export interface ISiteAuditResponse {
   uploaded_at: string;
   data: {
-    site_audit: ISiteAuditData[];
+    site_audit: ISiteAuditData;
   };
   url: string;
   id: string;

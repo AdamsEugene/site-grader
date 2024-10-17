@@ -101,10 +101,10 @@ const useSiteAnalysis = (message: IMessageProp | null) => {
             : null;
 
           // Parsing the site audit response from the code quality data
-          // const parsedCodeQuality =
-          //   typeof codeQualityResponse.data.data.site_audit === "string"
-          //     ? JSON.parse(codeQualityResponse.data.data.site_audit)
-          //     : codeQualityResponse.data.data.site_audit;
+          const parsedCodeQuality =
+            typeof codeQualityResponse.data.data.site_audit === "string"
+              ? JSON.parse(codeQualityResponse.data.data.site_audit)
+              : codeQualityResponse.data.data.site_audit;
 
           // Set the state with parsed data
           setData({
@@ -122,10 +122,10 @@ const useSiteAnalysis = (message: IMessageProp | null) => {
             },
           });
 
-          // console.log({
-          //   ...codeQualityResponse.data,
-          //   data: { site_audit: parsedCodeQuality },
-          // });
+          console.log({
+            ...codeQualityResponse.data,
+            data: { site_audit: parsedCodeQuality },
+          });
         } catch (err) {
           // Improved error handling
           console.error("Request failed", err);

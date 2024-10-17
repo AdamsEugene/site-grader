@@ -21,13 +21,12 @@ export default function LoadingPage({
   siteData,
 }: {
   progress?: string;
-  error?: string | null;
+  error?: { type: "progress" | "report"; message: string } | null;
   update?: string | null;
   siteData: SiteDataProp;
 }) {
   const [modalVisibility, setModalVisibility] = useState(false);
   const [oopsModalVisibility, setOopsModalVisibility] = useState(false);
-  const [catchError, setCatchError] = useState(false);
   // const location = useLocation();
 
   // Destructure the form data passed via state
@@ -41,7 +40,6 @@ export default function LoadingPage({
   useEffect(() => {
     const timer = setTimeout(() => {
       setModalVisibility(true);
-      setCatchError(true);
     }, 30000); // 30 seconds
 
     return () => {
@@ -50,10 +48,11 @@ export default function LoadingPage({
   }, []);
 
   useEffect(() => {
-    if (catchError) {
+    if (error?.type === "report") {
+      setModalVisibility(false);
       setOopsModalVisibility(true);
     }
-  }, [error, catchError]);
+  }, [error]);
 
   const location = useLocation();
 
@@ -107,7 +106,9 @@ export default function LoadingPage({
       <div className="m-auto grow w-1/3 flex justify-center items-center py-32 space-y-4 text-center">
         <div className="flex flex-col items-center space-y-4 w-full">
           <img src={siteIcon} width={50} height={50} alt="" />
-          {error && !update && <p className="text-red-500">{error}</p>}
+          {error?.type === "progress" && !update && (
+            <p className="text-red-500">{error.message}</p>
+          )}
           {update && !error && <p className="text-emerald-500">{update}</p>}
           <AppProgressBar
             progress={getProgress()}

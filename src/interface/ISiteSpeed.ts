@@ -1,35 +1,35 @@
 export interface IPSI_Metrics {
   largestContentfulPaint: {
-    speed: string;
+    speed: "Slow" | "Average" | "Fast" | "Unknown";
     value: number;
   };
   totalBlockingTime: {
-    speed: string;
+    speed: "Slow" | "Average" | "Fast" | "Unknown";
     value: number;
   };
   timeToFirstByte: {
-    speed: string;
+    speed: "Slow" | "Average" | "Fast" | "Unknown";
     value: number;
   };
   firstContentfulPaint: {
-    speed: string;
+    speed: "Slow" | "Average" | "Fast" | "Unknown";
     value: number;
   };
   cumulativeLayoutShift: {
-    speed: string;
+    speed: "Slow" | "Average" | "Fast" | "Unknown";
     value: number;
   };
   timeToInteractive: {
-    speed: string;
+    speed: "Slow" | "Average" | "Fast" | "Unknown";
     value: number;
   };
   speedIndex: {
-    speed: string;
+    speed: "Slow" | "Average" | "Fast" | "Unknown";
     value: number;
   };
   speedPercentage: {
     value: number;
-    speed: string;
+    speed: "Slow" | "Average" | "Fast" | "Unknown";
   };
 }
 
