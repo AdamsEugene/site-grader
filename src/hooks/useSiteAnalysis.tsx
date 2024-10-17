@@ -2,7 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import IMessageProp from "../interface/IMessageProp";
 import { IPSIDataResponse } from "../interface/ISiteSpeed";
-// import { ISiteAuditResponse } from "../interface/ICodeQuality";
+import { ISiteAuditResponse } from "../interface/ICodeQuality";
 // import { ISiteAuditResponse } from "../interface/ICodeQuality";
 
 interface AnalysisDataProps {
@@ -47,7 +47,8 @@ const useSiteAnalysis = (message: IMessageProp | null) => {
   const [siteSpeedData, setSiteSpeedData] = useState<IPSIDataResponse | null>(
     null
   );
-  // const [codeQualityData, setCodeQualityData] = useState<ISiteAuditResponse | null>(null);
+  const [codeQualityData, setCodeQualityData] =
+    useState<ISiteAuditResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -122,7 +123,7 @@ const useSiteAnalysis = (message: IMessageProp | null) => {
             },
           });
 
-          console.log({
+          setCodeQualityData({
             ...codeQualityResponse.data,
             data: { site_audit: parsedCodeQuality },
           });
@@ -140,7 +141,7 @@ const useSiteAnalysis = (message: IMessageProp | null) => {
     getAnalysisData();
   }, [message]); // Depend on message to trigger the effect when message changes
 
-  return { data, error, siteSpeedData };
+  return { data, error, siteSpeedData, codeQualityData };
 };
 
 export default useSiteAnalysis;

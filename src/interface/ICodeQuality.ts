@@ -1,4 +1,4 @@
-interface ISiteAuditData {
+export interface ISiteAuditData {
   HTML: {
     StructureAndSemantics: number;
     Accessibility: number;
@@ -37,11 +37,7 @@ interface ISiteAuditData {
     IntegrationWithHTMLCSS: number;
     Explanation: string;
     Improvement: string;
-    CodeRecommendation: {
-      OriginalCode: string;
-      RecommendedCode: string;
-      Explanation: string;
-    }[];
+    CodeRecommendation: IRecommendation[];
     score: number;
   };
   Overall: {
@@ -56,6 +52,12 @@ interface ISiteAuditData {
   };
   Total: number;
   Summary: string;
+}
+
+export interface IRecommendation {
+  OriginalCode: string;
+  RecommendedCode: string;
+  Explanation: string;
 }
 
 export interface ISiteAuditResponse {

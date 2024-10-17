@@ -75,7 +75,7 @@ button:focus-visible {
 /* Customize the scrollbar width */
 ::-webkit-scrollbar {
   width: 7px; /* Width for vertical scrollbar */
-  height: 12px; /* Height for horizontal scrollbar */
+  height: 5px; /* Height for horizontal scrollbar */
 }
 
 /* Customize the scrollbar track */

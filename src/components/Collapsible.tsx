@@ -20,7 +20,7 @@ const Collapsible: React.FC<CollapsibleProps> = ({ title, children }) => {
         onClick={toggleOpen}
         className="flex justify-between items-center px-3 cursor-pointer"
       >
-        <p className="w-full text-left py-3 capitalize">{title}</p>
+        <p className="w-full text-left py-3 capitalize text-sm">{title}</p>
         {isOpen ? <BiChevronDown size={25} /> : <MdChevronRight size={25} />}
       </div>
       {isOpen && <div className="max-h-40 overflow-auto">{children}</div>}
