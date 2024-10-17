@@ -52,11 +52,17 @@ export default function SiteSpeed({ pageData }: SiteSpeedProps) {
   const ttfbSpeed = pageData?.data.psi_metrics.largestContentfulPaint.speed;
   const ttfbValue = pageData?.data.psi_metrics.largestContentfulPaint.value;
 
+  // const indexSpeed = pageData?.data.psi_metrics.speedIndex.speed;
+  const indexValue = pageData?.data.psi_metrics.speedIndex.value;
+
   return (
     <div className="">
       <div className="rounded-lg shadow border w-full flex flex-col font-semibold mb-7">
         <p className="p-4 border-b font-bold">
-          Total Site Speed: <span className="text-red-700">7.7</span>
+          Total Site Speed:{" "}
+          <span className="text-red-700">
+            {indexValue ? indexValue / 1000 : 0}
+          </span>
         </p>
         <div className="flex justify-between divide-x border-b">
           <div className="flex flex-col sm:flex-row p-4 sm:items-center justify-between w-full">
