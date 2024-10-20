@@ -86,16 +86,16 @@ const useFetchAndListen = () => {
       const parsedData = JSON.parse(sourceMessage.data);
       setUpdate("Getting insight...");
       setError(null);
+
       setMessage(parsedData);
 
       // Check for stopping conditions
       if (
-        parsedData?.ai_insight_s3_uri &&
+        parsedData?.status === "completed" &&
         parsedData?.process_stage === "report_generation"
       ) {
         setUpdate("Finishing up...");
         eventSource.close(); // Stop the EventSource
-        console.log(parsedData);
         console.log("Listening has ended.");
 
         let fetchAttempts = 0; // Track the number of fetch attempts
@@ -121,7 +121,6 @@ const useFetchAndListen = () => {
             return false; // On error, continue retrying
           }
         };
-
         const retryFetch = async () => {
           const result = await fetchData();
           if (result) {
@@ -131,7 +130,7 @@ const useFetchAndListen = () => {
           fetchAttempts++; // Increment attempt counter
           if (fetchAttempts < 3) {
             console.log(`Retry ${fetchAttempts}...`);
-            setTimeout(retryFetch, 10 * 60 * 1000); // Retry every 2 minutes
+            setTimeout(retryFetch, 10 * 60 * 1000); // Retry every 1 minute
           } else {
             console.error("Failed to fetch site audit after 3 attempts.");
             setError({ type: "report", message: "Unable to get reports data" });

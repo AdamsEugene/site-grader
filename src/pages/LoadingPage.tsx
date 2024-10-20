@@ -18,24 +18,26 @@ export default function LoadingPage({
   progress,
   error,
   update,
-  siteData,
-}: {
+}: // siteData,
+{
   progress?: string;
   error?: { type: "progress" | "report"; message: string } | null;
   update?: string | null;
-  siteData: SiteDataProp;
+  siteData?: SiteDataProp;
 }) {
   const [modalVisibility, setModalVisibility] = useState(false);
   const [oopsModalVisibility, setOopsModalVisibility] = useState(false);
+  const [newprogress, setNewProgress] = useState<number>(0); // New state to track progress
+
   // const location = useLocation();
 
   // Destructure the form data passed via state
-  const {
-    site_url = "",
-    // product_service = "Default Product Service",
-    // average_revenue = 0,
-    // email = "",
-  } = siteData;
+  // const {
+  //   site_url = "",
+  //   product_service = "Default Product Service",
+  //   average_revenue = 0,
+  //   email = "",
+  // } = siteData;
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -55,7 +57,6 @@ export default function LoadingPage({
   }, [error]);
 
   const location = useLocation();
-
   const handleModalSubmit = (values: IModalData) => {
     console.log({
       ...values,
@@ -70,26 +71,30 @@ export default function LoadingPage({
     let calculatedProgress = 0;
 
     switch (progress) {
+      case "site_speed":
+        calculatedProgress = (1 / 8) * 100;
+        break;
+      case "site_speed_report_generation":
+        calculatedProgress = (2 / 8) * 100;
+        break;
       case "loading_site":
-        calculatedProgress = (1 / 5) * 100;
+        calculatedProgress = (3 / 8) * 100;
         break;
-
       case "ai_insight_analysis":
-        calculatedProgress = (2 / 5) * 100;
+        calculatedProgress = (4 / 8) * 100;
         break;
-
       case "cnn_analysis":
-        calculatedProgress = (3 / 5) * 100;
+        calculatedProgress = (5 / 8) * 100;
         break;
-
+      case "site_audit":
+        calculatedProgress = (6 / 8) * 100;
+        break;
       case "screenshot_taken":
-        calculatedProgress = (4 / 5) * 100;
+        calculatedProgress = (7 / 8) * 100;
         break;
-
       case "report_generation":
-        calculatedProgress = (5 / 5) * 100;
+        calculatedProgress = (8 / 8) * 100;
         break;
-
       default:
         calculatedProgress *= 100;
         break;
@@ -97,6 +102,16 @@ export default function LoadingPage({
 
     return calculatedProgress;
   };
+
+  // Map stages to progress percentages
+  // const progressMapping = {
+  //   loading_site: 20,
+  //   ai_insight_analysis: 40,
+  //   cnn_analysis: 60,
+  //   screenshot_taken: 80,
+  //   report_generation: 100,
+  // };
+  console.log("test" + progress);
 
   return (
     <div className="h-screen">
@@ -114,8 +129,8 @@ export default function LoadingPage({
             progress={getProgress()}
             className="rounded-full overflow-hidden w-full bg-gray-300/50"
           />
-          <p className="font-semibold text-sm">Progress update:</p>
-          <p>URL: {site_url}</p>
+          {/* <p className="font-semibold text-sm">Progress update:</p>
+          <p>URL: {siteData?.site_url}</p> */}
         </div>
       </div>
     </div>
