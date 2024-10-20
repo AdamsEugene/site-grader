@@ -18,24 +18,25 @@ export default function LoadingPage({
   progress,
   error,
   update,
-  siteData,
-}: {
+}: // siteData,
+{
   progress?: string;
   error?: { type: "progress" | "report"; message: string } | null;
   update?: string | null;
-  siteData: SiteDataProp;
+  siteData?: SiteDataProp;
 }) {
   const [modalVisibility, setModalVisibility] = useState(false);
   const [oopsModalVisibility, setOopsModalVisibility] = useState(false);
+
   // const location = useLocation();
 
   // Destructure the form data passed via state
-  const {
-    site_url = "",
-    // product_service = "Default Product Service",
-    // average_revenue = 0,
-    // email = "",
-  } = siteData;
+  // const {
+  //   site_url = "",
+  //   product_service = "Default Product Service",
+  //   average_revenue = 0,
+  //   email = "",
+  // } = siteData;
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -55,7 +56,6 @@ export default function LoadingPage({
   }, [error]);
 
   const location = useLocation();
-
   const handleModalSubmit = (values: IModalData) => {
     console.log({
       ...values,
@@ -98,8 +98,8 @@ export default function LoadingPage({
             progress={progressPercentage}
             className="rounded-full overflow-hidden w-full bg-gray-300/50"
           />
-          <p className="font-semibold text-sm">Progress update:</p>
-          <p>URL: {site_url}</p>
+          {/* <p className="font-semibold text-sm">Progress update:</p>
+          <p>URL: {siteData?.site_url}</p> */}
         </div>
       </div>
     </div>
