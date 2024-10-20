@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
-import DoughnutChart from "./DoughnutChart";
+import MiniDoughnutChart from "./MiniDoughnutChart";
 
 interface AppTitlebarProps {
   activePageNumber?: (number: number) => void;
   pages: PageDetailsProp[];
   currentPage?: PageDetailsProp;
+  totalSiteSpeed?: number | null | undefined;
+  totalCodeQuality?: number | null | undefined;
+  totalInsightScore?: number | null;
 }
 
 export interface PageDetailsProp {
@@ -41,6 +44,9 @@ export default function AppTitlebar({
   activePageNumber,
   pages,
   currentPage,
+  totalCodeQuality,
+  totalInsightScore,
+  totalSiteSpeed,
 }: AppTitlebarProps) {
   const [activePage, setActivePage] = useState<PageDetailsProp>(pages[0]);
 
@@ -66,7 +72,18 @@ export default function AppTitlebar({
             <div className="flex items-center pb-2">
               <span className="py-2 inline-block">{page.title}</span>{" "}
               <div className="h-10 w-10 ms-2">
-                <DoughnutChart labelClassName="text-[12px]" />
+                <MiniDoughnutChart
+                  labelClassName="text-[12px]"
+                  percentage={
+                    page.pageNumber === 1
+                      ? totalInsightScore
+                      : page.pageNumber === 2
+                      ? totalCodeQuality
+                      : page.pageNumber === 3
+                      ? totalSiteSpeed
+                      : 0
+                  }
+                />
               </div>
             </div>
 
