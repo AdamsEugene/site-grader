@@ -66,37 +66,21 @@ export default function LoadingPage({
     setModalVisibility(false);
   };
 
-  const getProgress = () => {
-    let calculatedProgress = 0;
+  const [progressStages, setProgressStages] = useState<string[]>([]);
 
-    switch (progress) {
-      case "loading_site":
-        calculatedProgress = (1 / 5) * 100;
-        break;
-
-      case "ai_insight_analysis":
-        calculatedProgress = (2 / 5) * 100;
-        break;
-
-      case "cnn_analysis":
-        calculatedProgress = (3 / 5) * 100;
-        break;
-
-      case "screenshot_taken":
-        calculatedProgress = (4 / 5) * 100;
-        break;
-
-      case "report_generation":
-        calculatedProgress = (5 / 5) * 100;
-        break;
-
-      default:
-        calculatedProgress *= 100;
-        break;
+  useEffect(() => {
+    const stage = progress;
+    if (stage) {
+      setProgressStages((prevProgressStage) => {
+        if (!prevProgressStage.includes(stage)) {
+          return [...prevProgressStage, stage];
+        }
+        return prevProgressStage;
+      });
     }
+  }, [progress]);
 
-    return calculatedProgress;
-  };
+  const progressPercentage = (progressStages.length / 10) * 100;
 
   return (
     <div className="h-screen">
@@ -111,7 +95,7 @@ export default function LoadingPage({
           )}
           {update && !error && <p className="text-emerald-500">{update}</p>}
           <AppProgressBar
-            progress={getProgress()}
+            progress={progressPercentage}
             className="rounded-full overflow-hidden w-full bg-gray-300/50"
           />
           <p className="font-semibold text-sm">Progress update:</p>

@@ -69,6 +69,10 @@ const useFetchAndListen = () => {
       `https://sitegrade.heatmapcore.com/api/progress/${jobId}`
     );
 
+    // eventSource.onopen = () => {
+    //   console.log("Connection opened");
+    // };
+
     eventSource.onerror = () => {
       if (eventSource.readyState === EventSource.CLOSED) {
         setError({ type: "progress", message: "Listening connection closed" });
@@ -87,6 +91,7 @@ const useFetchAndListen = () => {
       setUpdate("Getting insight...");
       setError(null);
       setMessage(parsedData);
+      // console.log(parsedData);
 
       // Check for stopping conditions
       if (
