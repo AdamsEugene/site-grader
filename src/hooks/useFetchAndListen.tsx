@@ -26,7 +26,13 @@ const useFetchAndListen = () => {
     setBodyData({ ...location.state, average_revenue: 19000 });
   }, [location]);
 
-  // Memoized function to fetch the jobId, using useCallback to avoid unnecessary re-creation
+  useEffect(() => {
+    const storedMessage = localStorage.getItem("message");
+    if (storedMessage) {
+      setMessage(JSON.parse(storedMessage));
+    }
+  }, []); // Run once on mount
+
   const getJobId = useCallback(async () => {
     setIsLoading(true); // Set loading to true while fetching the jobId
     if (!bodyData) return;
@@ -61,17 +67,12 @@ const useFetchAndListen = () => {
     } finally {
       setIsLoading(false); // Reset loading state
     }
-  }, [bodyData]); // Only memoize if requestBody changes
+  }, [bodyData]); // Only memoize if bodyData changes
 
-  // Function to listen to the event source for updates based on jobId
   const fetchDataAndListen = (jobId: string) => {
     const eventSource = new EventSource(
       `https://sitegrade.heatmapcore.com/api/progress/${jobId}`
     );
-
-    // eventSource.onopen = () => {
-    //   console.log("Connection opened");
-    // };
 
     eventSource.onerror = () => {
       if (eventSource.readyState === EventSource.CLOSED) {
@@ -92,9 +93,7 @@ const useFetchAndListen = () => {
       setError(null);
 
       setMessage(parsedData);
-      // console.log(parsedData);
 
-      // Check for stopping conditions
       if (
         parsedData?.status === "completed" &&
         parsedData?.process_stage === "report_generation"
@@ -114,8 +113,8 @@ const useFetchAndListen = () => {
             const fetchedData = response.data;
 
             if (fetchedData[0].site_audit_s3_uri) {
-              // console.log("Fetched data:", fetchedData[0]);
               setMessage(fetchedData[0]);
+              localStorage.setItem("message", JSON.stringify(fetchedData[0]));
               return true; // Data is found, return true to stop the attempts
             } else {
               console.log("No site_audit_s3_uri found, retrying...");
@@ -126,6 +125,7 @@ const useFetchAndListen = () => {
             return false; // On error, continue retrying
           }
         };
+
         const retryFetch = async () => {
           const result = await fetchData();
           if (result) {
@@ -153,12 +153,12 @@ const useFetchAndListen = () => {
     };
   };
 
-  // Effect for fetching the jobId only once on mount
+  // Effect to fetch jobId only if message is not in local storage
   useEffect(() => {
-    if (!jobId) {
-      getJobId(); // Fetch the job ID if it's not already fetched
+    if (!message) {
+      getJobId(); // Fetch the job ID if the message is not found
     }
-  }, [jobId, getJobId]); // Effect runs when requestBody or jobId changes
+  }, [message, getJobId]); // Effect runs when message or getJobId changes
 
   // Effect to start listening to the EventSource only when jobId is available
   useEffect(() => {
