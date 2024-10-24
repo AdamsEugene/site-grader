@@ -1,84 +1,214 @@
-import { MdCheck, MdClose } from "react-icons/md";
+import { useState } from "react";
 import AppButton from "../../components/AppButton";
 import AppNavbar2 from "../../components/AppNavbar2";
 import AppSidebar from "../../components/AppSidebar";
-import AppTitlebar from "../../components/Dashboard/AppTitlebar";
-import { useState } from "react";
+import AppTitlebar, { PageTitle } from "../../components/Dashboard/AppTitlebar";
+// import screenshot from "../../assets/images/site-screenshot.png";
+import { PiStarFour } from "react-icons/pi";
+import { CiImageOn } from "react-icons/ci";
+import LoadingPage from "../LoadingPage";
+import CodeQuality from "./CodeQuality";
+import SiteSpeed from "./SiteSpeed";
+import Feedback from "../../components/Feedback";
+import { FaChevronLeft } from "react-icons/fa";
+import pages from "../../lib/pageData";
+import useSiteAnalysis from "../../hooks/useSiteAnalysis";
+import useFetchAndListen from "../../hooks/useFetchAndListen";
+import { useLocation } from "react-router-dom";
 
-const recommendations = [
-  {
-    id: 1,
-    title: "Change Button Text",
-    description:
-      "Change the button text from “Try Gummy Supplements” to “Explore Gummy Supplements”. This encourages users to learn more about the product without implying a free trial.",
-  },
-  {
-    id: 2,
-    title: "improve Price Larity",
-    description:
-      'Display the default price as "$22.99" alongside "$17.40 for a 5-month supply (Save 24%)". This builds trust with your customer about pricing transparency, while also incentivizing bulk purchases by highlighting the significant savings.',
-  },
-  {
-    id: 3,
-    title: "Add Date Posted",
-    description:
-      "Display the date when the customer reviews were posted. This ensures users that they are recent and reflective of the current product.",
-  },
-  {
-    id: 4,
-    title: "Change Button Text",
-    description:
-      "Change the button text from “Try Gummy Supplements” to “Explore Gummy Supplements”. This encourages users to learn more about the product without implying a free trial.",
-  },
-];
+// const siteData = {
+//   site_url: "https://thejellybee.com",
+//   product_service: "Heatmap Provider",
+//   average_revenue: 1900,
+//   email: "support@heatmap.com",
+// };
 
 export default function Dashboard() {
-  const [activePage, setActivePageNumber] = useState(1);
+  const [activePageNumber, setActivePageNumber] = useState(1);
+  const [activeSection, setActiveSection] = useState(1);
+  const [urlCoppied, setUrlCoppied] = useState(false);
+
+  const location = useLocation();
+
+  // console.log(location.state);
+
+  const { message, error, update } = useFetchAndListen();
+
+  // {
+  //   ...location.state,
+  //   average_revenue: 1900,
+  // }
+
+  const copyToClipboard = async () => {
+    if (message?.share_id) {
+      try {
+        // Create a URL object from the current window location
+        const currentUrl = new URL(window.location.href);
+        const params = new URLSearchParams(currentUrl.search);
+
+        // Check if share_id is already in the URL
+        if (!params.has("share_id")) {
+          // If not, append it to the URL
+          params.set("share_id", message.share_id);
+        }
+
+        // Construct the new URL with the share_id
+        const newUrl = `${currentUrl.origin}${
+          currentUrl.pathname
+        }?${params.toString()}`;
+
+        // Copy the new URL to the clipboard
+        await navigator.clipboard.writeText(newUrl);
+        setUrlCoppied(true);
+        // alert("Text copied to clipboard!");
+      } catch (err) {
+        console.error("Failed to copy: ", err);
+      }
+    }
+  };
+
+  const { data, siteSpeedData, codeQualityData } = useSiteAnalysis(message);
+  if (!data)
+    return (
+      <LoadingPage
+        progress={message?.process_stage}
+        error={error}
+        update={update}
+        siteData={location.state}
+      />
+    );
+
   return (
-    <div className=" text-sm">
-      <AppNavbar2 />
+    <div className="overflow-hidden h-screen pb-20">
+      <AppNavbar2 onUrlCopy={copyToClipboard} urlCoppied={urlCoppied} />
 
-      <div className="px-4 flex">
-        <AppSidebar />
+      <div className="sm:hidden w-full p-4">
+        <AppButton
+          label="Your Site's Diagnostic"
+          onClick={() => setActivePageNumber(0)}
+          className="border-0 justify-between w-full px-0 font-semibold"
+          leftIcon={<FaChevronLeft className="absolute left-4" />}
+        />
+      </div>
 
-        <div className="flex flex-col px-4">
-          <AppTitlebar
-            activePageNumber={(number) => setActivePageNumber(number)}
-          />
+      <div className="h-full flex w-full px-3">
+        <AppSidebar
+          pages={pages}
+          className={`${
+            activePageNumber === 0 ? "sm:block" : "sm:block hidden"
+          }`}
+          onPageItemClick={(page) => setActivePageNumber(page?.pageNumber)}
+        />
 
-          <div className="flex w-full pt-5">
-            <div className="me-3 w-1/2">ad</div>
+        <div
+          className={`relative ${
+            activePageNumber === 0 ? "hidden sm:flex" : ""
+          } flex-col w-full overflow-hidden`}
+        >
+          {/* <AppModal visible={true} /> */}
 
-            <div className="flex flex-col w-1/2 pb-10">
-              <div className="rounded-lg shadow divide-y">
-                {recommendations.map((r, index) => (
-                  <div key={index} className="flex flex-col p-3">
-                    <div className="flex mb-2">
-                      <p className="px-2 py-0.5 font-thin text-white bg-emerald-700 rounded-sm">
-                        {index + 1}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="font-bold">{r.title}</p>
-                      <p className="font-normal">{r.description}</p>
-                    </div>
-                  </div>
-                ))}
+          <div
+            className={`${
+              activePageNumber === 0 ? "hidden sm:block" : "sm:block"
+            } `}
+          >
+            <AppTitlebar
+              pages={pages}
+              activePageNumber={(number) => setActivePageNumber(number)}
+              currentPage={pages[activePageNumber - 1]}
+            />
+          </div>
+
+          {/* {activePageNumber === 1 && ( */}
+          <div className="h-full overflow-auto px-4 pb-40">
+            <PageTitle
+              title={pages[activePageNumber - 1]?.title}
+              description={pages[activePageNumber - 1]?.description}
+            />
+
+            <div
+              className={`${
+                activePageNumber === 1 ? "md:hidden flex" : "hidden"
+              } space-x-3 font-bold mt-3`}
+            >
+              <AppButton
+                leftIcon={<PiStarFour className="me-2" />}
+                label="Recommendations"
+                className={`rounded-none border-0 w-full border-black ${
+                  activeSection === 1 ? "border-b-2" : ""
+                }`}
+                onClick={() => setActiveSection(1)}
+              />
+              <AppButton
+                leftIcon={<CiImageOn className="me-2" />}
+                label="Screenshots"
+                className={`rounded-none border-0 w-full border-black ${
+                  activeSection === 2 ? "border-b-2" : ""
+                }`}
+                onClick={() => setActiveSection(2)}
+              />
+            </div>
+            {/* )} */}
+
+            <div
+              className={`w-full pt-5 ${
+                activePageNumber === 1 ? "flex" : "hidden"
+              }`}
+            >
+              <div
+                className={`md:w-1/2 w-full md:me-3 ${
+                  activeSection === 2 ? "" : "hidden md:block"
+                }`}
+              >
+                <img src={message?.screenshot_s3_uri} className="m-auto" />
               </div>
 
-              <p className="mt-5 text-center">
-                Was this helpful?{" "}
-                <AppButton
-                  label="No"
-                  leftIcon={<MdClose className="me-1 text-red-700" />}
-                  className="p-1 px-2 mx-2"
-                />{" "}
-                <AppButton
-                  label="Yes"
-                  leftIcon={<MdCheck className="me-1 text-green-700" />}
-                  className="p-1 px-2 mx-2"
-                />
-              </p>
+              <div
+                className={`flex-col md:w-1/2 pb-10 ${
+                  activeSection === 1 ? "flex" : "hidden md:flex"
+                }`}
+              >
+                <div className="rounded-lg shadow divide-y">
+                  {data &&
+                    data.insights.map((insight, index) => (
+                      <div key={index} className="flex flex-col p-3">
+                        <div className="flex mb-2">
+                          <p className="px-2 py-0.5 font-thin text-white bg-emerald-700 rounded-sm">
+                            {index + 1}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="font-bold">{insight?.element_type}</p>
+                          <p className="font-normal">
+                            {insight.recommendation}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+
+                <Feedback />
+              </div>
+            </div>
+
+            <div
+              className={`w-full py-5 flex-col ${
+                activePageNumber === 2 ? "flex" : "hidden"
+              }`}
+            >
+              <CodeQuality pageData={codeQualityData} />
+
+              <Feedback
+                onFeedbackSelect={(feedback) => console.log(feedback)}
+              />
+            </div>
+
+            <div
+              className={`w-full py-5 flex-col ${
+                activePageNumber === 3 ? "flex" : "hidden"
+              }`}
+            >
+              <SiteSpeed pageData={siteSpeedData} />
             </div>
           </div>
         </div>
