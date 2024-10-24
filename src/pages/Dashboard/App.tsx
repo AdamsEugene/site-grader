@@ -26,6 +26,7 @@ import { useLocation } from "react-router-dom";
 export default function Dashboard() {
   const [activePageNumber, setActivePageNumber] = useState(1);
   const [activeSection, setActiveSection] = useState(1);
+  const [urlCoppied, setUrlCoppied] = useState(false);
 
   const location = useLocation();
 
@@ -37,6 +38,34 @@ export default function Dashboard() {
   //   ...location.state,
   //   average_revenue: 1900,
   // }
+
+  const copyToClipboard = async () => {
+    if (message?.share_id) {
+      try {
+        // Create a URL object from the current window location
+        const currentUrl = new URL(window.location.href);
+        const params = new URLSearchParams(currentUrl.search);
+
+        // Check if share_id is already in the URL
+        if (!params.has("share_id")) {
+          // If not, append it to the URL
+          params.set("share_id", message.share_id);
+        }
+
+        // Construct the new URL with the share_id
+        const newUrl = `${currentUrl.origin}${
+          currentUrl.pathname
+        }?${params.toString()}`;
+
+        // Copy the new URL to the clipboard
+        await navigator.clipboard.writeText(newUrl);
+        setUrlCoppied(true);
+        // alert("Text copied to clipboard!");
+      } catch (err) {
+        console.error("Failed to copy: ", err);
+      }
+    }
+  };
 
   const { data, siteSpeedData, codeQualityData } = useSiteAnalysis(message);
   if (!data)
@@ -51,7 +80,7 @@ export default function Dashboard() {
 
   return (
     <div className="overflow-hidden h-screen pb-20">
-      <AppNavbar2 />
+      <AppNavbar2 onUrlCopy={copyToClipboard} urlCoppied={urlCoppied} />
 
       <div className="sm:hidden w-full p-4">
         <AppButton

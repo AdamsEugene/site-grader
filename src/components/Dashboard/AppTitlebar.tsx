@@ -44,10 +44,10 @@ export default function AppTitlebar({
   activePageNumber,
   pages,
   currentPage,
-  totalCodeQuality,
-  totalInsightScore,
-  totalSiteSpeed,
-}: AppTitlebarProps) {
+}: // totalCodeQuality,
+// totalInsightScore,
+// totalSiteSpeed,
+AppTitlebarProps) {
   const [activePage, setActivePage] = useState<PageDetailsProp>(pages[0]);
 
   useEffect(() => {
@@ -74,15 +74,7 @@ export default function AppTitlebar({
               <div className="h-10 w-10 ms-2">
                 <MiniDoughnutChart
                   labelClassName="text-[12px]"
-                  percentage={
-                    page.pageNumber === 1
-                      ? totalInsightScore
-                      : page.pageNumber === 2
-                      ? totalCodeQuality
-                      : page.pageNumber === 3
-                      ? totalSiteSpeed
-                      : 0
-                  }
+                  percentage={page.rating}
                 />
               </div>
             </div>

@@ -26,6 +26,10 @@ const useFetchAndListen = () => {
 
   const location = useLocation();
 
+  // Extract share_id from URL
+  const searchParams = new URLSearchParams(location.search);
+  const shareId = searchParams.get("share_id");
+
   useEffect(() => {
     setBodyData({ ...location.state, average_revenue: 19000 });
   }, [location]);
@@ -67,25 +71,30 @@ const useFetchAndListen = () => {
     }
   }, [bodyData]);
 
-  const fetchReportsData = useCallback(async (jobId: string) => {
-    console.log("Fetching reports data...");
-    try {
-      const response = await axios.get<IMessageProp[]>(
-        `https://sitegrade.heatmapcore.com/api/reports/${jobId}`
-      );
-      const fetchedData = response.data;
+  const fetchReportsData = useCallback(
+    async (id: string) => {
+      console.log("Fetching reports data...");
+      try {
+        const response = await axios.get<IMessageProp[]>(
+          `https://sitegrade.heatmapcore.com/api/reports/${id}`
+        );
+        const fetchedData = response.data;
 
-      if (fetchedData[0].site_audit_s3_uri) {
-        setMessage(fetchedData[0]);
-        localStorage.setItem("message", JSON.stringify(fetchedData[0]));
-      } else {
-        throw new Error("No site_audit_s3_uri found.");
+        if (fetchedData[0].site_audit_s3_uri) {
+          setMessage(fetchedData[0]);
+          if (!shareId) {
+            localStorage.setItem("message", JSON.stringify(fetchedData[0]));
+          }
+        } else {
+          throw new Error("No site_audit_s3_uri found.");
+        }
+      } catch (error) {
+        console.error("Error while getting reports:", error);
+        setError({ type: "report", message: "Unable to get reports data" });
       }
-    } catch (error) {
-      console.error("Error while getting reports:", error);
-      setError({ type: "report", message: "Unable to get reports data" });
-    }
-  }, []); // No dependencies since it doesn't rely on outside state
+    },
+    [shareId]
+  );
 
   const fetchDataAndListen = useCallback(
     (jobId: string) => {
@@ -137,16 +146,20 @@ const useFetchAndListen = () => {
       };
     },
     [fetchReportsData]
-  ); // Now has a stable reference
+  );
 
   useEffect(() => {
-    if (!message) {
+    if (!message && !shareId) {
       getJobId();
     }
-  }, [message, getJobId]);
+  }, [message, getJobId, shareId]);
 
   useEffect(() => {
-    if (validationData) {
+    if (shareId) {
+      // Fetch report data using share_id if it exists
+      fetchReportsData(shareId);
+      // console.log("shared");
+    } else if (validationData) {
       if (validationData.jobId && validationData.status !== 1) {
         const cleanupListener = fetchDataAndListen(validationData.jobId);
         return cleanupListener;
@@ -154,7 +167,7 @@ const useFetchAndListen = () => {
         fetchReportsData(validationData.jobId); // Only fetch report data
       }
     }
-  }, [validationData, fetchDataAndListen, fetchReportsData]); // Include fetchDataAndListen in dependencies
+  }, [validationData, fetchDataAndListen, fetchReportsData, shareId]);
 
   return { error, message, update, isLoading };
 };

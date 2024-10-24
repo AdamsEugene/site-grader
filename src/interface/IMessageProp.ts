@@ -11,4 +11,5 @@ export default interface IMessageProp {
   cnn_s3_uri?: string;
   site_speed_s3_uri?: string;
   site_audit_s3_uri?: string;
+  share_id?: string;
 }
