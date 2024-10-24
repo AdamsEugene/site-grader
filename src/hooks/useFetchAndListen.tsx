@@ -4,7 +4,10 @@ import { useLocation } from "react-router-dom";
 import axios from "axios";
 
 interface FetchDataResponse {
-  jobId?: string; // Define the expected shape of your response
+  jobId: string;
+  status: number;
+  share_id: string;
+  message: string;
 }
 
 const gradingUrl = "https://sitegrade.heatmapcore.com/api/validate";
@@ -17,7 +20,8 @@ const useFetchAndListen = () => {
     message: string;
   } | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [jobId, setJobId] = useState<string | null>(null);
+  const [validationData, setValidationData] =
+    useState<FetchDataResponse | null>(null);
   const [bodyData, setBodyData] = useState();
 
   const location = useLocation();
@@ -31,10 +35,10 @@ const useFetchAndListen = () => {
     if (storedMessage) {
       setMessage(JSON.parse(storedMessage));
     }
-  }, []); // Run once on mount
+  }, []);
 
   const getJobId = useCallback(async () => {
-    setIsLoading(true); // Set loading to true while fetching the jobId
+    setIsLoading(true);
     if (!bodyData) return;
 
     try {
@@ -51,13 +55,7 @@ const useFetchAndListen = () => {
       }
 
       const responseData: FetchDataResponse = await response.json();
-
-      if (responseData.jobId) {
-        console.log("Fetched Job ID Successfully:", responseData.jobId);
-        setJobId(responseData.jobId); // Save the jobId to state
-      } else {
-        throw new Error("Job ID not found in the response.");
-      }
+      setValidationData(responseData);
     } catch (error) {
       console.error("Fetch error:", error);
       setError({
@@ -65,109 +63,98 @@ const useFetchAndListen = () => {
         message: "An error occurred while fetching the job ID.",
       });
     } finally {
-      setIsLoading(false); // Reset loading state
+      setIsLoading(false);
     }
-  }, [bodyData]); // Only memoize if bodyData changes
+  }, [bodyData]);
 
-  const fetchDataAndListen = (jobId: string) => {
-    const eventSource = new EventSource(
-      `https://sitegrade.heatmapcore.com/api/progress/${jobId}`
-    );
+  const fetchReportsData = useCallback(async (jobId: string) => {
+    console.log("Fetching reports data...");
+    try {
+      const response = await axios.get<IMessageProp[]>(
+        `https://sitegrade.heatmapcore.com/api/reports/${jobId}`
+      );
+      const fetchedData = response.data;
 
-    eventSource.onerror = () => {
-      if (eventSource.readyState === EventSource.CLOSED) {
-        setError({ type: "progress", message: "Listening connection closed" });
-        setUpdate(null);
+      if (fetchedData[0].site_audit_s3_uri) {
+        setMessage(fetchedData[0]);
+        localStorage.setItem("message", JSON.stringify(fetchedData[0]));
       } else {
-        setError({
-          type: "progress",
-          message: "Listening encountered an error, Retrying...",
-        });
-        setUpdate(null);
+        throw new Error("No site_audit_s3_uri found.");
       }
-    };
+    } catch (error) {
+      console.error("Error while getting reports:", error);
+      setError({ type: "report", message: "Unable to get reports data" });
+    }
+  }, []); // No dependencies since it doesn't rely on outside state
 
-    eventSource.onmessage = async (sourceMessage) => {
-      const parsedData = JSON.parse(sourceMessage.data);
-      setUpdate("Getting insight...");
-      setError(null);
+  const fetchDataAndListen = useCallback(
+    (jobId: string) => {
+      const eventSource = new EventSource(
+        `https://sitegrade.heatmapcore.com/api/progress/${jobId}`
+      );
 
-      setMessage(parsedData);
+      eventSource.onopen = () => {
+        console.log("Connection opened!!");
+      };
 
-      if (
-        parsedData?.status === "completed" &&
-        parsedData?.process_stage === "report_generation"
-      ) {
-        setUpdate("Finishing up...");
-        eventSource.close(); // Stop the EventSource
-        console.log("Listening has ended.");
+      eventSource.onerror = () => {
+        if (eventSource.readyState === EventSource.CLOSED) {
+          setError({
+            type: "progress",
+            message: "Listening connection closed",
+          });
+          setUpdate(null);
+        } else {
+          setError({
+            type: "progress",
+            message: "Listening encountered an error, Retrying...",
+          });
+          setUpdate(null);
+        }
+      };
 
-        let fetchAttempts = 0; // Track the number of fetch attempts
+      eventSource.onmessage = async (sourceMessage) => {
+        const parsedData = JSON.parse(sourceMessage.data);
+        setUpdate("Getting insight...");
+        setError(null);
+        setMessage(parsedData);
 
-        const fetchData = async () => {
-          try {
-            const response = await axios.get<IMessageProp[]>(
-              `https://sitegrade.heatmapcore.com/api/reports/${parsedData.id}`
-            );
+        if (
+          parsedData?.status === "completed" &&
+          parsedData?.process_stage === "report_generation"
+        ) {
+          setUpdate("Finishing up...");
+          eventSource.close();
+          console.log("Listening has ended.");
 
-            const fetchedData = response.data;
+          await fetchReportsData(parsedData.id); // Fetch the reports data
+        }
+      };
 
-            if (fetchedData[0].site_audit_s3_uri) {
-              setMessage(fetchedData[0]);
-              localStorage.setItem("message", JSON.stringify(fetchedData[0]));
-              return true; // Data is found, return true to stop the attempts
-            } else {
-              console.log("No site_audit_s3_uri found, retrying...");
-              return false; // No data found, continue retrying
-            }
-          } catch (error) {
-            console.log("Error while getting reports ", error);
-            return false; // On error, continue retrying
-          }
-        };
+      return () => {
+        eventSource.close();
+        console.log("Listening connection closed on cleanup.");
+      };
+    },
+    [fetchReportsData]
+  ); // Now has a stable reference
 
-        const retryFetch = async () => {
-          const result = await fetchData();
-          if (result) {
-            return; // Exit if the data was found
-          }
-
-          fetchAttempts++; // Increment attempt counter
-          if (fetchAttempts < 3) {
-            console.log(`Retry ${fetchAttempts}...`);
-            setTimeout(retryFetch, 10 * 60 * 1000); // Retry every 1 minute
-          } else {
-            console.error("Failed to fetch site audit after 3 attempts.");
-            setError({ type: "report", message: "Unable to get reports data" });
-          }
-        };
-
-        // Initial fetch attempt
-        await retryFetch();
-      }
-    };
-
-    return () => {
-      eventSource.close(); // Clean up on unmount or when jobId changes
-      console.log("Listening connection closed on cleanup.");
-    };
-  };
-
-  // Effect to fetch jobId only if message is not in local storage
   useEffect(() => {
     if (!message) {
-      getJobId(); // Fetch the job ID if the message is not found
+      getJobId();
     }
-  }, [message, getJobId]); // Effect runs when message or getJobId changes
+  }, [message, getJobId]);
 
-  // Effect to start listening to the EventSource only when jobId is available
   useEffect(() => {
-    if (jobId) {
-      const cleanupListener = fetchDataAndListen(jobId); // Start listening once jobId is available
-
-      return cleanupListener; // Cleanup when component unmounts or jobId changes
+    if (validationData) {
+      if (validationData.jobId && validationData.status !== 1) {
+        const cleanupListener = fetchDataAndListen(validationData.jobId);
+        return cleanupListener;
+      } else if (validationData.jobId && validationData.status === 1) {
+        fetchReportsData(validationData.jobId); // Only fetch report data
+      }
     }
-  }, [jobId]); // Dependency on jobId
+  }, [validationData, fetchDataAndListen, fetchReportsData]); // Include fetchDataAndListen in dependencies
 
   return { error, message, update, isLoading };
 };
