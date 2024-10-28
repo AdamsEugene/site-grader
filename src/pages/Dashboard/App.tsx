@@ -27,6 +27,7 @@ export default function Dashboard() {
   const [activePageNumber, setActivePageNumber] = useState(1);
   const [activeSection, setActiveSection] = useState(1);
   const [urlCoppied, setUrlCoppied] = useState(false);
+  const [showToast, setShowToast] = useState(false);
 
   const location = useLocation();
 
@@ -60,10 +61,22 @@ export default function Dashboard() {
         // Copy the new URL to the clipboard
         await navigator.clipboard.writeText(newUrl);
         setUrlCoppied(true);
+        handleShowToast();
+
         // alert("Text copied to clipboard!");
       } catch (err) {
         console.error("Failed to copy: ", err);
       }
+    }
+  };
+
+  const handleShowToast = () => {
+    if (urlCoppied) {
+      setShowToast(true);
+
+      setTimeout(() => {
+        setShowToast(false);
+      }, 3000);
     }
   };
 
@@ -91,8 +104,15 @@ export default function Dashboard() {
         />
       </div>
 
-      <div className="h-full flex w-full px-3">
+      <div className="h-full flex w-full px-3 relative">
+        {showToast && (
+          <div className="absolute right-4 z-10 bg-emerald-800 text-sm rounded-md bottom-0 py-2 px-4 text-white">
+            Url Coppied to clipboard
+          </div>
+        )}
+
         <AppSidebar
+          pageData={data}
           pages={pages}
           className={`${
             activePageNumber === 0 ? "sm:block" : "sm:block hidden"

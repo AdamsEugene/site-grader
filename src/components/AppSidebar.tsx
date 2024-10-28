@@ -4,16 +4,19 @@ import { PageDetailsProp } from "./Dashboard/AppTitlebar";
 import GaussianDistributionChart from "./Dashboard/GaussianDistributionChart";
 import DoughnutChart from "./Dashboard/DoughnutChart";
 import ProgressBarChart from "./Dashboard/ProgressBarChart";
+import IMessageProp from "../interface/IMessageProp";
 
 interface AppSidebarProps {
   className?: string;
   pages: PageDetailsProp[];
+  pageData: IMessageProp;
   onPageItemClick?: (page: PageDetailsProp) => void;
 }
 
 export default function AppSidebar({
   className,
   pages,
+  pageData,
   onPageItemClick,
 }: AppSidebarProps) {
   return (
@@ -23,7 +26,7 @@ export default function AppSidebar({
       <div className="space-y-4 p-2 pb-40 text-center h-full w-full overflow-y-auto">
         <p className="text-lg font-semibold">Your Site's Diagnostic</p>
         <Link to={"fb.com"} className="text-sm font-normal sm:text-slate-200">
-          https://thejellybee.com
+          {pageData?.url}
         </Link>
         <div className="sm:bg-transparent/10 rounded-lg w-full p-3">
           <p className="font-bold">Overall Score</p>
