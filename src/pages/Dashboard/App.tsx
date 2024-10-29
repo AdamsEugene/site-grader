@@ -3,7 +3,6 @@ import AppButton from "../../components/AppButton";
 import AppNavbar2 from "../../components/AppNavbar2";
 import AppSidebar from "../../components/AppSidebar";
 import AppTitlebar, { PageTitle } from "../../components/Dashboard/AppTitlebar";
-// import screenshot from "../../assets/images/site-screenshot.png";
 import { PiStarFour } from "react-icons/pi";
 import { CiImageOn } from "react-icons/ci";
 import LoadingPage from "../LoadingPage";
@@ -16,29 +15,19 @@ import useSiteAnalysis from "../../hooks/useSiteAnalysis";
 import useFetchAndListen from "../../hooks/useFetchAndListen";
 import { useLocation } from "react-router-dom";
 
-// const siteData = {
-//   site_url: "https://thejellybee.com",
-//   product_service: "Heatmap Provider",
-//   average_revenue: 1900,
-//   email: "support@heatmap.com",
-// };
-
 export default function Dashboard() {
   const [activePageNumber, setActivePageNumber] = useState(1);
   const [activeSection, setActiveSection] = useState(1);
-  const [urlCoppied, setUrlCoppied] = useState(false);
+  const [urlCopied, setUrlCopied] = useState(false);
   const [showToast, setShowToast] = useState(false);
 
   const location = useLocation();
 
-  // console.log(location.state);
-
   const { message, error, update } = useFetchAndListen();
 
-  // {
-  //   ...location.state,
-  //   average_revenue: 1900,
-  // }
+  const { data, siteSpeedData, codeQualityData } = useSiteAnalysis(message);
+
+  // const siteUrl = location.state?.site_url || "https://defaultsiteurl.com";
 
   const copyToClipboard = async () => {
     if (message?.share_id) {
@@ -60,27 +49,22 @@ export default function Dashboard() {
 
         // Copy the new URL to the clipboard
         await navigator.clipboard.writeText(newUrl);
-        setUrlCoppied(true);
         handleShowToast();
-
+        setUrlCopied(true);
         // alert("Text copied to clipboard!");
       } catch (err) {
         console.error("Failed to copy: ", err);
       }
     }
   };
-
   const handleShowToast = () => {
-    if (urlCoppied) {
-      setShowToast(true);
+    setShowToast(true);
 
-      setTimeout(() => {
-        setShowToast(false);
-      }, 3000);
-    }
+    setTimeout(() => {
+      setShowToast(false);
+    }, 5000);
   };
 
-  const { data, siteSpeedData, codeQualityData } = useSiteAnalysis(message);
   if (!data)
     return (
       <LoadingPage
@@ -93,7 +77,7 @@ export default function Dashboard() {
 
   return (
     <div className="overflow-hidden h-screen pb-20">
-      <AppNavbar2 onUrlCopy={copyToClipboard} urlCoppied={urlCoppied} />
+      <AppNavbar2 onUrlCopy={copyToClipboard} urlCopied={urlCopied} />
 
       <div className="sm:hidden w-full p-4">
         <AppButton
@@ -104,16 +88,27 @@ export default function Dashboard() {
         />
       </div>
 
-      <div className="h-full flex w-full px-3 relative">
+      <div className="h-full flex w-full px-3">
         {showToast && (
-          <div className="absolute right-4 z-10 bg-emerald-800 text-sm rounded-md bottom-0 py-2 px-4 text-white">
-            Url Coppied to clipboard
+          <div className="absolute right-4 z-10 bg-brandGreen text-sm rounded-md bottom-2 py-3 px-5 text-white">
+            <div className="flex items-center justify-between">
+              <span className="font-bold mr-12">Url Copied to Clipboard</span>
+              <span
+                className="cursor-pointer"
+                onClick={() => setShowToast(false)}
+              >
+                X
+              </span>
+            </div>
           </div>
         )}
-
         <AppSidebar
-          pageData={data}
           pages={pages}
+          pageData={data}
+          // siteUrl={siteUrl}
+          totalCodeQuality={codeQualityData?.data.site_audit.Total}
+          totalInsightScore={parseInt(data.user_experience_score)}
+          totalSiteSpeed={siteSpeedData?.data.psi_metrics.speedPercentage.value}
           className={`${
             activePageNumber === 0 ? "sm:block" : "sm:block hidden"
           }`}
@@ -125,8 +120,6 @@ export default function Dashboard() {
             activePageNumber === 0 ? "hidden sm:flex" : ""
           } flex-col w-full overflow-hidden`}
         >
-          {/* <AppModal visible={true} /> */}
-
           <div
             className={`${
               activePageNumber === 0 ? "hidden sm:block" : "sm:block"
@@ -134,12 +127,16 @@ export default function Dashboard() {
           >
             <AppTitlebar
               pages={pages}
+              totalCodeQuality={codeQualityData?.data.site_audit.Total}
+              totalInsightScore={parseInt(data.user_experience_score)}
+              totalSiteSpeed={
+                siteSpeedData?.data.psi_metrics.speedPercentage.value
+              }
               activePageNumber={(number) => setActivePageNumber(number)}
               currentPage={pages[activePageNumber - 1]}
             />
           </div>
 
-          {/* {activePageNumber === 1 && ( */}
           <div className="h-full overflow-auto px-4 pb-40">
             <PageTitle
               title={pages[activePageNumber - 1]?.title}
@@ -168,7 +165,6 @@ export default function Dashboard() {
                 onClick={() => setActiveSection(2)}
               />
             </div>
-            {/* )} */}
 
             <div
               className={`w-full pt-5 ${
@@ -193,9 +189,9 @@ export default function Dashboard() {
                     data.insights.map((insight, index) => (
                       <div key={index} className="flex flex-col p-3">
                         <div className="flex mb-2">
-                          <p className="px-2 py-0.5 font-thin text-white bg-emerald-700 rounded-sm">
+                          <span className="font-thin text-white bg-emerald-700 rounded-sm w-8 h-8 flex items-center justify-center">
                             {index + 1}
-                          </p>
+                          </span>
                         </div>
                         <div>
                           <p className="font-bold">{insight?.element_type}</p>
@@ -217,7 +213,6 @@ export default function Dashboard() {
               }`}
             >
               <CodeQuality pageData={codeQualityData} />
-
               <Feedback
                 onFeedbackSelect={(feedback) => console.log(feedback)}
               />

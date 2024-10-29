@@ -7,6 +7,7 @@ import Home from "./pages/Home.tsx";
 import Form1 from "./pages/Form1.tsx";
 import LoadingPage from "./pages/LoadingPage.tsx";
 import Dashboard from "./pages/Dashboard/App.tsx";
+import EmailTemplate from "./pages/Emails/EmailTemplate.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -17,6 +18,7 @@ createRoot(document.getElementById("root")!).render(
         <Route path="/Form1" element={<Form1 />} />
         <Route path="/LoadingPage" element={<LoadingPage />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/email" element={<EmailTemplate />} />
       </Routes>
     </Router>
   </StrictMode>

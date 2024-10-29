@@ -1,37 +1,56 @@
 import { MdChevronRight } from "react-icons/md";
 import { Link } from "react-router-dom";
-import { PageDetailsProp } from "./Dashboard/AppTitlebar";
-import GaussianDistributionChart from "./Dashboard/GaussianDistributionChart";
 import DoughnutChart from "./Dashboard/DoughnutChart";
 import ProgressBarChart from "./Dashboard/ProgressBarChart";
+import MiniDoughnutChart from "./Dashboard/MiniDoughnutChart";
+import { PageDetailsProp } from "./Dashboard/AppTitlebar";
+// import { IPSIDataResponse } from "../interface/ISiteSpeed";
 import IMessageProp from "../interface/IMessageProp";
 
 interface AppSidebarProps {
   className?: string;
   pages: PageDetailsProp[];
-  pageData: IMessageProp;
   onPageItemClick?: (page: PageDetailsProp) => void;
+  pageData?: IMessageProp | null;
+  // pageInfo?: IMessageProp;
+  totalSiteSpeed?: number | null | undefined;
+  totalCodeQuality?: number | null | undefined;
+  totalInsightScore?: number | null;
+  // siteUrl: string;
 }
 
 export default function AppSidebar({
   className,
   pages,
-  pageData,
   onPageItemClick,
-}: AppSidebarProps) {
+  totalCodeQuality,
+  totalInsightScore,
+  totalSiteSpeed,
+  pageData,
+}: // siteUrl,
+AppSidebarProps) {
+  const overallPercentage =
+    totalCodeQuality && totalInsightScore && totalSiteSpeed
+      ? parseFloat(
+          ((totalCodeQuality + totalInsightScore + totalSiteSpeed) / 3).toFixed(
+            2
+          )
+        )
+      : 0;
+  console.log("site" + pageData?.url);
   return (
     <div
-      className={`h-full bg-white sm:bg-emerald-700 sm:text-white text-gray-800  sm:rounded-lg w-full sm:max-w-[250px] lg:max-w-[300px] overflow-hidden ${className}`}
+      className={`h-full bg-white sm:bg-brandGreen sm:text-white text-gray-800 px-2 sm:rounded-lg w-full sm:max-w-[250px] lg:max-w-[320px] overflow-hidden ${className}`}
     >
       <div className="space-y-4 p-2 pb-40 text-center h-full w-full overflow-y-auto">
         <p className="text-lg font-semibold">Your Site's Diagnostic</p>
         <Link to={"fb.com"} className="text-sm font-normal sm:text-slate-200">
           {pageData?.url}
         </Link>
-        <div className="sm:bg-transparent/10 rounded-lg w-full p-3">
+        <div className="sm:bg-[#08916F1A] rounded-lg w-full p-3">
           <p className="font-bold">Overall Score</p>
-          <div className="p-10">
-            <DoughnutChart percentage={65} />
+          <div className="p-2">
+            <DoughnutChart percentage={overallPercentage} />
           </div>
 
           <div className="space-y-4 hidden sm:flex flex-col">
@@ -39,17 +58,17 @@ export default function AppSidebar({
               <ProgressBarChart
                 key={index}
                 label={page.title}
-                percentage={page.rating}
+                percentage={
+                  page.pageNumber === 1
+                    ? totalInsightScore
+                    : page.pageNumber === 2
+                    ? totalCodeQuality
+                    : page.pageNumber === 3
+                    ? totalSiteSpeed
+                    : 0
+                }
               />
             ))}
-          </div>
-        </div>
-
-        <div className="pt-5 hidden sm:block overflow-hidden">
-          <div className="bg-transparent/10 relative rounded-lg w-full flex flex-col gap-y-6">
-            <GaussianDistributionChart />
-            <GaussianDistributionChart />
-            <GaussianDistributionChart />
           </div>
         </div>
 
@@ -62,7 +81,18 @@ export default function AppSidebar({
             >
               <div className="flex items-center py-2">
                 <div className="h-10 w-10">
-                  <DoughnutChart labelClassName="text-[12px]" />
+                  <MiniDoughnutChart
+                    labelClassName="text-xs"
+                    percentage={
+                      page.pageNumber === 1
+                        ? totalInsightScore
+                        : page.pageNumber === 2
+                        ? totalCodeQuality
+                        : page.pageNumber === 3
+                        ? totalSiteSpeed
+                        : 0
+                    }
+                  />
                 </div>
 
                 <div className="ms-1">

@@ -35,7 +35,7 @@ const useFetchAndListen = () => {
   }, [location]);
 
   useEffect(() => {
-    const storedMessage = localStorage.getItem("message");
+    const storedMessage = sessionStorage.getItem("message");
     if (storedMessage) {
       setMessage(JSON.parse(storedMessage));
     }
@@ -83,7 +83,7 @@ const useFetchAndListen = () => {
         if (fetchedData[0].site_audit_s3_uri) {
           setMessage(fetchedData[0]);
           if (!shareId) {
-            localStorage.setItem("message", JSON.stringify(fetchedData[0]));
+            sessionStorage.setItem("message", JSON.stringify(fetchedData[0]));
           }
         } else {
           throw new Error("No site_audit_s3_uri found.");

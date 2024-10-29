@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import AppButton from "../components/AppButton";
 import AppInput from "../components/AppInput";
 import AppLinkButton from "../components/AppLinkButton";
@@ -33,10 +33,6 @@ export default function Home() {
     ); // fragment locator
     return !!urlPattern.test(urlString);
   };
-
-  useEffect(() => {
-    localStorage.clear();
-  }, []);
 
   return (
     <div className="">

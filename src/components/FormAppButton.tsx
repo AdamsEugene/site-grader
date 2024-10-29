@@ -8,19 +8,20 @@ interface AppButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   rightIcon?: ReactElement;
 }
 
-const AppButton = forwardRef<HTMLButtonElement, AppButtonProps>(
+const FormAppButton = forwardRef<HTMLButtonElement, AppButtonProps>(
   ({ label, className = "", primary, rightIcon, leftIcon, ...props }, ref) => {
     return (
       <button
         ref={ref}
         className={`${
           primary
-            ? "bg-[#08916F] border-[#08916F] text-white disabled:bg-emerald-700/50 border-0"
-            : "border border-[#08916F]"
-        } disabled:bg-green-200 disabled:text-gray-400 rounded-lg p-2 px-4 cursor-pointer text-sm disabled:cursor-default ${className}`}
+            ? "bg-white border-borderGreen text-white disabled:bg-emerald700/50 border-0"
+            : "border border-borderGray"
+        } disabled:bg-green200 disabled:text-gray400 rounded-lg p-2 px-4 cursor-pointer text-sm disabled:cursor-default ${className} 
+        focus:bg-deepEmerald focus:border-deepEmerald focus:text-white active:bg-deepEmerald active:border-deepEmerald active:text-white`}
         {...props}
       >
-        <div className="flex items-center justify-center ">
+        <div className="flex items-center justify-center">
           {leftIcon}
           {label}
           {rightIcon}
@@ -30,4 +31,4 @@ const AppButton = forwardRef<HTMLButtonElement, AppButtonProps>(
   }
 );
 
-export default AppButton;
+export default FormAppButton;

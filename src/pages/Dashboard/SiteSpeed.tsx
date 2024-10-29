@@ -1,7 +1,3 @@
-// import { FcDoughnutChart } from "react-icons/fc";
-// import CodeSnippet from "../../components/CodeSnippet";
-// import Collapsible from "../../components/Collapsible";
-// import { PageDetailsProp } from "../../components/Dashboard/AppTitlebar";
 import Feedback from "../../components/Feedback";
 import { IPSIDataResponse } from "../../interface/ISiteSpeed";
 import slowSvg from "../../assets/images/avg1.svg";

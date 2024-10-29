@@ -1,5 +1,5 @@
 import AppButton from "./AppButton";
-import AppProgressBar from "./AppProgressBar";
+import AppNavProgressBar from "./AppNavProgressBar";
 
 interface AppNavbarProps {
   showControls?: boolean;
@@ -34,7 +34,7 @@ export default function AppNavbar({
         )}
       </div>
 
-      {loaderProgress && <AppProgressBar progress={loaderProgress} />}
+      {loaderProgress && <AppNavProgressBar progress={loaderProgress} />}
     </div>
   );
 }

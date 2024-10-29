@@ -9,7 +9,7 @@ const DoughnutChart: React.FC<DoughnutChartProps> = ({
   percentage = 10,
   labelClassName,
 }) => {
-  const orangeValue = Math.min(Math.max(percentage || 0, 0), 100);
+  const orangeValue = Math.round(Math.min(Math.max(percentage || 0, 0), 100));
   const totalArcCircumference = (300 / 360) * 283;
   const filledArcLength = (orangeValue / 100) * totalArcCircumference;
   const strokeDashArray = `${filledArcLength} ${totalArcCircumference}`;
@@ -20,7 +20,7 @@ const DoughnutChart: React.FC<DoughnutChartProps> = ({
   } else if (orangeValue < 66.67) {
     filledColor = "orange";
   } else {
-    filledColor = "#22C322";
+    filledColor = "#22C322"; // Green
   }
 
   const calculateStrokePositions = (
@@ -51,7 +51,7 @@ const DoughnutChart: React.FC<DoughnutChartProps> = ({
     <div
       style={{
         position: "relative",
-        width: "200px",
+        width: "100%",
         height: "200px",
       }}
     >
@@ -61,6 +61,7 @@ const DoughnutChart: React.FC<DoughnutChartProps> = ({
         viewBox="0 0 100 100"
         style={{ transform: "rotate(120deg)" }}
       >
+        {/* Unfilled grey part */}
         <circle
           cx="50"
           cy="50"
@@ -72,8 +73,10 @@ const DoughnutChart: React.FC<DoughnutChartProps> = ({
             283 - totalArcCircumference
           }`}
           strokeDashoffset="0"
+          className="unfilled-chart"
         />
 
+        {/* Filled part of the chart */}
         <circle
           cx="50"
           cy="50"
@@ -84,15 +87,17 @@ const DoughnutChart: React.FC<DoughnutChartProps> = ({
           strokeDasharray={strokeDashArray}
           strokeDashoffset="0"
           strokeLinecap="round"
+          className="filled-chart"
         />
 
+        {/* Stroke decorations */}
         {[
           {
             angle: 33,
             heightInPixels: 8,
             verticalOffset: 2,
             rotationAngle: -2,
-            slantAngle: 0,
+            slantAngle: -1.2,
           },
           {
             angle: 85,
@@ -137,11 +142,13 @@ const DoughnutChart: React.FC<DoughnutChartProps> = ({
                 strokeWidth={strokeWidthGroup1}
                 strokeLinecap="round"
                 transform={`rotate(${slantAngle}, ${shortX}, ${shortY})`}
+                className="decorative-stroke"
               />
             );
           }
         )}
 
+        {/* Additional stroke decorations */}
         {[
           {
             angle: 173,
@@ -207,6 +214,7 @@ const DoughnutChart: React.FC<DoughnutChartProps> = ({
                 strokeWidth={strokeWidthGroup2}
                 strokeLinecap="round"
                 transform={`rotate(${slantAngle}, ${shortX}, ${shortY})`}
+                className="decorative-stroke"
               />
             );
           }
@@ -236,6 +244,18 @@ const DoughnutChart: React.FC<DoughnutChartProps> = ({
           out of 100
         </span>
       </div>
+
+      {/* Add the mobile specific styles */}
+      <style>{`
+        @media (max-width: 639px) {
+          .unfilled-chart {
+            stroke: #C7CCD1; /* Set the unfilled part to grey on mobile */
+          }
+          .decorative-stroke {
+            stroke: white; /* Set stroke decorations to white on mobile */
+          }
+        }
+      `}</style>
     </div>
   );
 };

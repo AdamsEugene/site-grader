@@ -18,11 +18,11 @@ const MiniDoughnutChart: React.FC<DoughnutChartProps> = ({
 
   let filledColor;
   if (orangeValue < 33.33) {
-    filledColor = "red";
+    filledColor = "#FF0000"; // Red
   } else if (orangeValue < 66.67) {
-    filledColor = "orange";
+    filledColor = "#FFA500"; // Orange
   } else {
-    filledColor = "#22C322";
+    filledColor = "#22C322"; // Green
   }
 
   const data = {
@@ -37,22 +37,7 @@ const MiniDoughnutChart: React.FC<DoughnutChartProps> = ({
         spacing: 0,
         cutout: "85%",
         circumference: 360,
-        rotation: 210,
-      },
-    ],
-  };
-
-  const backgroundData = {
-    labels: ["Background"],
-    datasets: [
-      {
-        data: [50, 50],
-        backgroundColor: ["transparent"],
-        borderWidth: 0,
-        borderRadius: [10, 0],
-        cutout: "85%",
-        circumference: 360,
-        rotation: 210,
+        rotation: 210, // or 0 if needed
       },
     ],
   };
@@ -71,58 +56,15 @@ const MiniDoughnutChart: React.FC<DoughnutChartProps> = ({
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        width: "100%",
-        maxWidth: "400px",
-        margin: "auto",
-        position: "relative",
-        aspectRatio: "1",
-      }}
-    >
-      <div
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-          zIndex: 0,
-        }}
-      >
-        <Doughnut data={backgroundData} options={options} />
-      </div>
-
-      <div
-        style={{
-          position: "relative",
-          width: "100%",
-          height: "100%",
-        }}
-      >
+    <div className="relative flex justify-center items-center w-full max-w-[400px] aspect-square m-auto">
+      {/* Foreground Doughnut */}
+      <div className="relative w-full h-full z-10">
         <Doughnut data={data} options={options} />
       </div>
 
-      <div
-        className="flex flex-col items-center"
-        style={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          fontSize: "20px",
-          fontWeight: "bold",
-          zIndex: 2,
-          textAlign: "center",
-        }}
-      >
-        <span
-          className={`${labelClassName}`}
-          style={{ fontSize: "12px", fontWeight: 600 }}
-        >
+      {/* Center Label */}
+      <div className="absolute top-1/2 left-1/2 z-20 transform -translate-x-1/2 -translate-y-1/2 text-center font-bold">
+        <span className={`text-xs font-semibold ${labelClassName}`}>
           {orangeValue}
         </span>
       </div>
