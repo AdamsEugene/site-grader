@@ -22,7 +22,7 @@ export default function LoadingPage({
   update,
 }: {
   progress?: string;
-  error?: { type: "progress" | "report"; message: string } | null;
+  error?: { type: "progress" | "report" | "status"; message: string } | null;
   update?: string | null;
   siteData?: SiteDataProp;
 }) {
@@ -45,7 +45,7 @@ export default function LoadingPage({
   }, []);
 
   useEffect(() => {
-    if (error?.type === "report") {
+    if (error?.type === "report" || error?.type === "status") {
       setModalVisibility(false);
       setOopsModalVisibility(true);
     }

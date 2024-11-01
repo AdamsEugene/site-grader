@@ -16,7 +16,7 @@ const useFetchAndListen = () => {
   const [message, setMessage] = useState<IMessageProp | null>(null);
   const [update, setUpdate] = useState<string | null>(null);
   const [error, setError] = useState<{
-    type: "progress" | "report";
+    type: "progress" | "report" | "status";
     message: string;
   } | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -34,12 +34,12 @@ const useFetchAndListen = () => {
     setBodyData({ ...location.state, average_revenue: 19000 });
   }, [location]);
 
-  useEffect(() => {
-    const storedMessage = sessionStorage.getItem("message");
-    if (storedMessage) {
-      setMessage(JSON.parse(storedMessage));
-    }
-  }, []);
+  // useEffect(() => {
+  //   const storedMessage = sessionStorage.getItem("message");
+  //   if (storedMessage) {
+  //     setMessage(JSON.parse(storedMessage));
+  //   }
+  // }, []);
 
   const getJobId = useCallback(async () => {
     setIsLoading(true);
@@ -127,8 +127,14 @@ const useFetchAndListen = () => {
         setUpdate("Getting insight...");
         setError(null);
         setMessage(parsedData);
-
-        if (
+        console.log(parsedData);
+        if (parsedData?.status === "failed") {
+          eventSource.close();
+          setError({
+            type: "status",
+            message: "Listening encountered an error, Retrying...",
+          });
+        } else if (
           parsedData?.status === "completed" &&
           parsedData?.process_stage === "report_generation"
         ) {
@@ -159,12 +165,13 @@ const useFetchAndListen = () => {
       // Fetch report data using share_id if it exists
       fetchReportsData(shareId);
       // console.log("shared");
-    } else if (validationData) {
+    } else if (validationData?.jobId) {
       if (validationData.jobId && validationData.status !== 1) {
         const cleanupListener = fetchDataAndListen(validationData.jobId);
         return cleanupListener;
       } else if (validationData.jobId && validationData.status === 1) {
-        fetchReportsData(validationData.jobId); // Only fetch report data
+        fetchReportsData(validationData.jobId);
+        console.log(validationData.jobId, "&&", validationData.status === 1);
       }
     }
   }, [validationData, fetchDataAndListen, fetchReportsData, shareId]);

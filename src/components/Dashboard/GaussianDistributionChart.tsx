@@ -1,126 +1,147 @@
-import { Line } from "react-chartjs-2";
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-} from "chart.js";
+import React from "react";
 
-// Register Chart.js components
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
-);
+interface GaussianDistributionChartProps {
+  benchmarkValue: number | null;
+}
 
-const BellCurveChart = () => {
-  // Function to generate the Gaussian bell curve data
+const GaussianDistributionChart = ({
+  benchmarkValue,
+}: GaussianDistributionChartProps) => {
+  const mean = benchmarkValue || 60; // Default to 60 if industryValue is null
+  const sigma = 10;
+  const curveHeight = 130; // Desired peak height of the curve
+  const totalWidth = 300;
+  const totalHeight = 150;
+
   const generateBellCurveData = () => {
-    const mean = 60;
-    const sigma = 10;
     const data = [];
+    let maxY = 0; // Track the maximum y value
 
-    for (let x = 30; x <= 90; x += 1) {
+    // Generate data points
+    for (let x = mean - 30; x <= mean + 30; x += 1) {
       const y =
         (1 / (sigma * Math.sqrt(2 * Math.PI))) *
         Math.exp(-((x - mean) ** 2) / (2 * sigma ** 2));
-      data.push({ x, y: y * 100 });
+      data.push({ x, y });
+      if (y > maxY) maxY = y; // Update maxY if the current y is larger
     }
 
-    return data;
+    // Scale all y values to fit the curveHeight
+    const normalizedData = data.map((point) => ({
+      x: point.x,
+      y: (point.y / maxY) * curveHeight, // Scale y to match the desired curveHeight
+    }));
+
+    return { normalizedData, maxY };
   };
 
-  // Generate the data for the chart
-  const curveData = generateBellCurveData();
+  const { normalizedData: curveData } = generateBellCurveData();
 
-  // Separate the dataset into two parts: below and above the 69.7% mark
-  const beforeThreshold = curveData.map((point) =>
-    point.x <= 70 ? point.y : null
-  ); // Data points before 69.7% (white area)
-  const afterThreshold = curveData.map((point) =>
-    point.x > 70 ? point.y : null
-  ); // Data points after 69.7% (#f2f2f2 area)
+  // Map data points to SVG coordinates
+  const meanIndex = curveData.findIndex((point) => point.x === mean);
+  const leftCurvePath = curveData
+    .slice(0, meanIndex + 1)
+    .map(
+      (point, i) =>
+        `${i === 0 ? "M" : "L"} ${
+          ((point.x - (mean - 30)) / 60) * totalWidth
+        } ${totalHeight - point.y}`
+    )
+    .join(" ");
 
-  // Data for Chart.js
-  const data = {
-    labels: curveData.map((point) => point.x), // X-axis values (30 to 90)
-    datasets: [
-      {
-        label: "Below 69.7%",
-        data: beforeThreshold, // White shaded area data
-        borderColor: "white",
-        borderWidth: 2,
-        fill: true,
-        backgroundColor: "white", // Fill with white color for the covered area
-        tension: 0.4, // Makes the line smooth
-        pointBackgroundColor: "white",
-        pointRadius: 0,
-      },
-      {
-        label: "Above 69.7%",
-        data: afterThreshold, // #f2f2f2 shaded area data
-        borderColor: "#02221A",
-        borderWidth: 2,
-        fill: true,
-        backgroundColor: "#02221A", // Fill with #f2f2f2 for the remaining area
-        tension: 0.4, // Makes the line smooth
-        pointBackgroundColor: "white",
-        pointRadius: 0,
-      },
-      {
-        label: "Highlighted Point",
-        data: curveData.map(
-          (point) => (point.x === 70 ? point.y : null) // Highlight point closest to 69.7
-        ),
-        borderColor: "transparent",
-        pointBackgroundColor: "white",
-        pointBorderColor: "white",
-        pointRadius: 6, // Size of the dot
-        showLine: false, // Don't draw a line for this dataset
-      },
-    ],
-  };
+  const rightCurvePath = curveData
+    .slice(meanIndex)
+    .map(
+      (point, i) =>
+        `${i === 0 ? "M" : "L"} ${
+          ((point.x - (mean - 30)) / 60) * totalWidth
+        } ${totalHeight - point.y}`
+    )
+    .join(" ");
 
-  // Chart.js options
-  const options = {
-    responsive: true,
-    scales: {
-      x: {
-        ticks: { color: "white" },
-        grid: { display: false },
-      },
-      y: {
-        display: false, // Hide Y-axis entirely
-      },
-    },
-    plugins: {
-      legend: { display: false }, // No need for the legend
-      tooltip: { enabled: false }, // Disable tooltips
-    },
-  };
+  // Define x-axis labels (30, 40, 50, 60, 70, 80, 90) and their positions
+  const xLabels = [30, 40, 50, 60, 70, 80, 90];
+  const labelPositions = xLabels.map(
+    (label) => ((label - (mean - 30)) / 60) * totalWidth
+  );
 
   return (
-    <div
-      style={{
-        padding: "20px",
-        borderRadius: "10px",
-        width: "300px",
-      }}
-    >
-      <h3 style={{ color: "white", textAlign: "center", fontWeight: "bold" }}>
-        69.7% Average
-      </h3>
-      <Line data={data} options={options} />
+    <div style={{ width: "100%", maxWidth: "600px", margin: "0 auto" }}>
+      <div>
+        {benchmarkValue ? (
+          <>
+            <div>{benchmarkValue}%</div>
+            <h4>Average</h4>
+          </>
+        ) : (
+          <div>Industry Average</div>
+        )}
+      </div>
+
+      <svg
+        viewBox={`0 0 ${totalWidth} ${totalHeight + 20}`}
+        width="100%"
+        height="auto"
+        preserveAspectRatio="xMidYMid meet"
+      >
+        {/* Left Curve Path (Full White) */}
+        <path
+          d={leftCurvePath}
+          stroke="white"
+          strokeWidth="4"
+          fill="transparent"
+        />
+        {/* Right Curve Path (Semi-transparent White) */}
+        <path
+          d={rightCurvePath}
+          stroke="rgba(255, 255, 255, 0.5)"
+          strokeWidth="3"
+          fill="transparent"
+        />
+
+        {/* Vertical Lines from Labels to Curve */}
+        {xLabels.map((label, i) => {
+          const xPos = labelPositions[i];
+          const curvePoint = curveData.find((point) => point.x === label);
+          const yPosOnCurve = totalHeight - (curvePoint ? curvePoint.y : 0);
+
+          return (
+            <line
+              key={`line-${i}`}
+              x1={xPos}
+              y1={totalHeight + 5} // Slightly below the x-axis labels
+              x2={xPos}
+              y2={yPosOnCurve}
+              stroke="rgba(255, 255, 255, 0.5)"
+              strokeWidth="1"
+            />
+          );
+        })}
+
+        {/* Mean Point */}
+        <circle
+          cx={(mean - (mean - 30)) * (totalWidth / 60)}
+          cy={totalHeight - curveHeight / 1}
+          r="4"
+          fill="white"
+        />
+
+        {/* X-axis Labels */}
+        {xLabels.map((label, i) => (
+          <text
+            key={`label-${i}`}
+            x={labelPositions[i]}
+            y={totalHeight + 15} // Position below the curve
+            fontSize="10"
+            fill="white"
+            textAnchor="middle"
+          >
+            {label}
+          </text>
+        ))}
+      </svg>
     </div>
   );
 };
 
-export default BellCurveChart;
+export default GaussianDistributionChart;
