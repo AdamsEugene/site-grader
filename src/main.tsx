@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import "./index.css";
 import Home from "./pages/Home.tsx";
 import Form1 from "./pages/Form1.tsx";
+import LoadingPage from "./pages/LoadingPage.tsx";
 import Dashboard from "./pages/Dashboard/App.tsx";
 
 createRoot(document.getElementById("root")!).render(
@@ -14,6 +15,7 @@ createRoot(document.getElementById("root")!).render(
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/Form1" element={<Form1 />} />
+        <Route path="/LoadingPage" element={<LoadingPage />} />
         <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
     </Router>
