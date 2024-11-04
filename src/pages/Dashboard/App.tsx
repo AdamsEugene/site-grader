@@ -115,7 +115,9 @@ export default function Dashboard() {
           className={`${
             activePageNumber === 0 ? "sm:block" : "sm:block hidden"
           }`}
-          onPageItemClick={(page) => setActivePageNumber(page?.pageNumber)}
+          onPageItemClick={(page) =>
+            page && setActivePageNumber(page.pageNumber)
+          }
         />
 
         <div

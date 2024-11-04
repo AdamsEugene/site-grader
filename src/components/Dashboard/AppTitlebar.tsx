@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import MiniDoughnutChart from "./MiniDoughnutChart";
 
 interface AppTitlebarProps {
-  activePageNumber?: (number: number | undefined) => void;
+  activePageNumber?: (number: number) => void;
   pages: PageDetailsProp[];
   currentPage?: PageDetailsProp;
   totalSiteSpeed?: number | null | undefined;
@@ -11,14 +11,14 @@ interface AppTitlebarProps {
 }
 
 export interface PageDetailsProp {
-  pageNumber?: number;
-  title?: string;
-  description?: string;
-  rating?: number;
+  pageNumber: number;
+  title: string;
+  description: string;
+  rating: number;
   recommendations?: {
-    id?: number;
-    title?: string;
-    description?: string | string[];
+    id: number;
+    title: string;
+    description: string | string[];
     snippets?: {
       type: "original" | "recommended";
       language: string;

@@ -5,12 +5,13 @@ import ProgressBarChart from "./Dashboard/ProgressBarChart";
 import MiniDoughnutChart from "./Dashboard/MiniDoughnutChart";
 import GaussianDistributionChart from "./Dashboard/GaussianDistributionChart";
 import useFetchIndustryValue from "../hooks/useFetchIndustryValue";
+import { PageDetailsProp } from "./Dashboard/AppTitlebar";
 
-interface PageDetailsProp {
-  title: string;
-  pageNumber: number;
-  recommendations?: string[] | undefined;
-}
+// interface PageDetailsProp {
+//   title: string;
+//   pageNumber: number;
+//   recommendations?: string[] | undefined;
+// }
 
 interface IMessageProp {
   url?: string;
@@ -87,7 +88,7 @@ export default function AppSidebar({
           </div>
         </div>
 
-        <div className="pt-2 m-0 hidden  overflow-hidden w-full">
+        <div className="pt-2 m-0 hidden sm:block  overflow-hidden w-full">
           <div className="bg-transparent/10 relative rounded-lg w-full flex flex-col gap-y-6">
             <h4 className="text-white text-center text-sm font-semibold">
               HOMEPAGE
@@ -100,7 +101,7 @@ export default function AppSidebar({
             </p>
           </div>
         </div>
-        <div className="pt-2 hidden  overflow-hidden w-full">
+        <div className="pt-2 hidden sm:block overflow-hidden w-full">
           <div className="bg-transparent/10 relative rounded-lg w-full flex flex-col gap-y-6">
             {/* Gaussian distribution chart for category value */}
             <GaussianDistributionChart benchmarkValue={categoryValue} />
