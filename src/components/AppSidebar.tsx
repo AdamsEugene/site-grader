@@ -18,7 +18,7 @@ interface IMessageProp {
 
 interface AppSidebarProps {
   className?: string;
-  pages: PageDetailsProp[];
+  pages?: PageDetailsProp[];
   onPageItemClick?: (page: PageDetailsProp) => void;
   pageData?: IMessageProp | null;
   totalSiteSpeed?: number | null | undefined;
@@ -86,9 +86,9 @@ export default function AppSidebar({
           </div>
         </div>
 
-        <div className="pt-2 m-0 hidden  overflow-hidden w-full">
-          <div className="bg-transparent/10 relative rounded-lg w-full flex flex-col gap-y-6">
-            <h4 className="text-white text-center text-sm font-semibold">
+        <div className="hidden sm:block overflow-hidden w-full rounded-lg">
+          <div className="sm:bg-[#08916F1A] relative w-full flex flex-col sm:border-b-2 sm:border-brandGreen py-4 gap-y-4">
+            <h4 className="text-white text-center text-[18px] font-semibold">
               HOMEPAGE
             </h4>
             {/* Gaussian distribution chart for industry value */}
@@ -98,11 +98,17 @@ export default function AppSidebar({
               Compared against 438 Homepages
             </p>
           </div>
-        </div>
-        <div className="pt-2 hidden  overflow-hidden w-full">
-          <div className="bg-transparent/10 relative rounded-lg w-full flex flex-col gap-y-6">
+
+          <div className="sm:bg-[#08916F1A] relative w-full flex flex-col sm:border-b-2 sm:border-brandGreen py-4 gap-y-4">
+            <h4 className="text-white text-center text-[18px] font-semibold">
+              $500k-$1M revenue/year
+            </h4>
             {/* Gaussian distribution chart for category value */}
             <GaussianDistributionChart benchmarkValue={categoryValue} />
+            {/* Text below the first Gaussian chart */}
+            <p className="text-white text-center text-sm">
+              Compared against 329 sites with $500k-$1M revenue per year
+            </p>
           </div>
         </div>
 

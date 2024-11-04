@@ -12,7 +12,7 @@ export default function AppNavbar2({
     <div className="bg-white">
       <div className="p-3 py-4 flex justify-start sm:justify-between md:justify-between items-center">
         <div className="flex items-center">
-          <a href="/" className="cursor-pointer">
+          <a href="/" className="cursor-pointer flex">
             <AppLogoIcon size="small" className="rounded-sm me-1" />
             <p className="font-semibold">Heatmap Insights</p>
           </a>
