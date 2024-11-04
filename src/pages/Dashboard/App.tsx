@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AppButton from "../../components/AppButton";
 import AppNavbar2 from "../../components/AppNavbar2";
 import AppSidebar from "../../components/AppSidebar";
@@ -40,35 +40,36 @@ export default function Dashboard() {
   //   average_revenue: 1900,
   // }
 
-  const copyToClipboard = async () => {
-    if (message?.share_id) {
-      try {
-        // Create a URL object from the current window location
-        const currentUrl = new URL(window.location.href);
-        const params = new URLSearchParams(currentUrl.search);
+  const appendShareIdToUrl = (shareId: string) => {
+    const currentUrl = new URL(window.location.href);
+    const params = new URLSearchParams(currentUrl.search);
 
-        // Check if share_id is already in the URL
-        if (!params.has("share_id")) {
-          // If not, append it to the URL
-          params.set("share_id", message.share_id);
-        }
+    if (!params.has("sid")) {
+      params.set("sid", shareId);
 
-        // Construct the new URL with the share_id
-        const newUrl = `${currentUrl.origin}${
-          currentUrl.pathname
-        }?${params.toString()}`;
-
-        // Copy the new URL to the clipboard
-        await navigator.clipboard.writeText(newUrl);
-        setUrlCoppied(true);
-        handleShowToast();
-
-        // alert("Text copied to clipboard!");
-      } catch (err) {
-        console.error("Failed to copy: ", err);
-      }
+      const newUrl = `${currentUrl.origin}${
+        currentUrl.pathname
+      }?${params.toString()}`;
+      window.history.replaceState({}, "", newUrl);
     }
   };
+
+  const copyToClipboard = async () => {
+    try {
+      // Copy the current URL to the clipboard
+      await navigator.clipboard.writeText(window.location.href);
+      setUrlCoppied(true);
+      handleShowToast();
+    } catch (err) {
+      console.error("Failed to copy: ", err);
+    }
+  };
+
+  useEffect(() => {
+    if (message?.share_id) {
+      appendShareIdToUrl(message.share_id);
+    }
+  }, [message]);
 
   const handleShowToast = () => {
     if (urlCoppied) {

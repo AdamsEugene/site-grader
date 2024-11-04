@@ -28,7 +28,7 @@ const useFetchAndListen = () => {
 
   // Extract share_id from URL
   const searchParams = new URLSearchParams(location.search);
-  const shareId = searchParams.get("share_id");
+  const shareId = searchParams.get("sid");
 
   useEffect(() => {
     setBodyData({ ...location.state, average_revenue: 19000 });
