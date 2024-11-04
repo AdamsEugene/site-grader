@@ -4,6 +4,7 @@ import AppNavbar from "../components/AppNavbar";
 import AppFooter from "../components/AppFooter";
 import { useNavigate, useLocation } from "react-router-dom";
 import useCategoryProducts from "../hooks/useCategoryProducts";
+import FormAppButton from "../components/FormAppButton";
 
 // Define the types for steps and their structure
 interface Step {
@@ -96,7 +97,7 @@ export default function Form1() {
 
           <div className="space-y-2">
             {steps[activeStep - 1]?.options.map((option, index) => (
-              <AppButton
+              <FormAppButton
                 key={index}
                 label={option}
                 className="w-full text-left"

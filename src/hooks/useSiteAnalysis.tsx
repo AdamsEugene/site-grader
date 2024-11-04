@@ -8,6 +8,7 @@ import { ISiteAuditResponse } from "../interface/ICodeQuality";
 interface AnalysisDataProps {
   updated_at: string;
   insights: InsightProp[];
+  user_experience_score: string;
   url: string;
   id: string;
 }
@@ -86,6 +87,10 @@ const useSiteAnalysis = (message: IMessageProp | null) => {
               ? JSON.parse(insightResponse.data.insights)
               : insightResponse.data.insights;
 
+          const parsedUserExperienceScore =
+            typeof insightResponse.data.user_experience_score === "string"
+              ? JSON.parse(insightResponse.data.user_experience_score)
+              : insightResponse.data.user_experience_score;
           // const parsedSiteSpeed =
           //   typeof siteSpeedResponse.data.data === "string"
           //     ? JSON.parse(siteSpeedResponse.data?.data)
@@ -111,6 +116,7 @@ const useSiteAnalysis = (message: IMessageProp | null) => {
           setData({
             ...insightResponse.data,
             insights: parsedInsights,
+            user_experience_score: parsedUserExperienceScore,
           });
 
           // Logging the parsed data

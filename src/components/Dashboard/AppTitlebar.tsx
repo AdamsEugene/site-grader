@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import MiniDoughnutChart from "./MiniDoughnutChart";
 
 interface AppTitlebarProps {
-  activePageNumber?: (number: number) => void;
+  activePageNumber?: (number: number | undefined) => void;
   pages: PageDetailsProp[];
   currentPage?: PageDetailsProp;
   totalSiteSpeed?: number | null | undefined;
@@ -11,14 +11,14 @@ interface AppTitlebarProps {
 }
 
 export interface PageDetailsProp {
-  pageNumber: number;
-  title: string;
-  description: string;
-  rating: number;
+  pageNumber?: number;
+  title?: string;
+  description?: string;
+  rating?: number;
   recommendations?: {
-    id: number;
-    title: string;
-    description: string | string[];
+    id?: number;
+    title?: string;
+    description?: string | string[];
     snippets?: {
       type: "original" | "recommended";
       language: string;
@@ -44,10 +44,10 @@ export default function AppTitlebar({
   activePageNumber,
   pages,
   currentPage,
-}: // totalCodeQuality,
-// totalInsightScore,
-// totalSiteSpeed,
-AppTitlebarProps) {
+  totalCodeQuality,
+  totalInsightScore,
+  totalSiteSpeed,
+}: AppTitlebarProps) {
   const [activePage, setActivePage] = useState<PageDetailsProp>(pages[0]);
 
   useEffect(() => {
@@ -70,17 +70,27 @@ AppTitlebarProps) {
             }}
           >
             <div className="flex items-center pb-2">
-              <span className="py-2 inline-block">{page.title}</span>{" "}
+              <span className="py-2 inline-block font-semibold">
+                {page.title}
+              </span>{" "}
               <div className="h-10 w-10 ms-2">
                 <MiniDoughnutChart
-                  labelClassName="text-[12px]"
-                  percentage={page.rating}
+                  labelClassName="text-xs"
+                  percentage={
+                    page.pageNumber === 1
+                      ? totalInsightScore
+                      : page.pageNumber === 2
+                      ? totalCodeQuality
+                      : page.pageNumber === 3
+                      ? totalSiteSpeed
+                      : 0
+                  }
                 />
               </div>
             </div>
 
             {activePage?.pageNumber === page.pageNumber && (
-              <div className="h-[3px] w-full bg-emerald-700" />
+              <div className="h-[3px] w-full bg-primaryText" />
             )}
           </div>
         ))}

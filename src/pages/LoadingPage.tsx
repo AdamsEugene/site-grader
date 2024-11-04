@@ -6,6 +6,8 @@ import { useEffect, useState } from "react";
 import AppModal, { IModalData } from "../components/AppModal";
 import { useLocation } from "react-router-dom";
 import OopsModal from "../components/OopsModal";
+import useContact from "../hooks/useContact";
+// import { IContact } from "../interface/IContact";
 
 interface SiteDataProp {
   site_url: string;
@@ -18,30 +20,24 @@ export default function LoadingPage({
   progress,
   error,
   update,
-}: // siteData,
-{
+}: {
   progress?: string;
-  error?: { type: "progress" | "report"; message: string } | null;
+  error?: { type: "progress" | "report" | "status"; message: string } | null;
   update?: string | null;
   siteData?: SiteDataProp;
 }) {
   const [modalVisibility, setModalVisibility] = useState(false);
   const [oopsModalVisibility, setOopsModalVisibility] = useState(false);
+  const { responseMessage, sendContactDetails } = useContact();
 
-  // const location = useLocation();
-
-  // Destructure the form data passed via state
-  // const {
-  //   site_url = "",
-  //   product_service = "Default Product Service",
-  //   average_revenue = 0,
-  //   email = "",
-  // } = siteData;
+  useEffect(() => {
+    if (responseMessage) console.log(responseMessage);
+  }, [responseMessage]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setModalVisibility(true);
-    }, 30000); // 30 seconds
+    }, 20000); // 20 seconds
 
     return () => {
       clearTimeout(timer);
@@ -49,7 +45,7 @@ export default function LoadingPage({
   }, []);
 
   useEffect(() => {
-    if (error?.type === "report") {
+    if (error?.type === "report" || error?.type === "status") {
       setModalVisibility(false);
       setOopsModalVisibility(true);
     }
@@ -57,11 +53,11 @@ export default function LoadingPage({
 
   const location = useLocation();
   const handleModalSubmit = (values: IModalData) => {
-    console.log({
+    sendContactDetails({
       ...values,
       id: values.business_email,
       annual_revenue: location.state.average_revenue,
-      product_service: location.state.product_service,
+      products_services: location.state.product_service,
     });
     setModalVisibility(false);
   };
@@ -83,12 +79,13 @@ export default function LoadingPage({
   const progressPercentage = (progressStages.length / 10) * 100;
 
   return (
-    <div className="h-screen">
+    <div className="h-screen flex flex-col">
+      {/* Navbar Section */}
       <AppNavbar />
-      <OopsModal visible={oopsModalVisibility} />
-      <AppModal visible={modalVisibility} onSubmit={handleModalSubmit} />
-      <div className="m-auto grow w-1/3 flex justify-center items-center py-32 space-y-4 text-center">
-        <div className="flex flex-col items-center space-y-4 w-full">
+
+      {/* Centered Progress Bar Section */}
+      <div className="flex-grow flex justify-center items-center">
+        <div className="flex flex-col items-center space-y-4 w-1/3 text-center">
           <img src={siteIcon} width={50} height={50} alt="" />
           {error?.type === "progress" && !update && (
             <p className="text-red-500">{error.message}</p>
@@ -98,10 +95,12 @@ export default function LoadingPage({
             progress={progressPercentage}
             className="rounded-full overflow-hidden w-full bg-gray-300/50"
           />
-          {/* <p className="font-semibold text-sm">Progress update:</p>
-          <p>URL: {siteData?.site_url}</p> */}
         </div>
       </div>
+
+      {/* Modals */}
+      <OopsModal visible={oopsModalVisibility} />
+      <AppModal visible={modalVisibility} onSubmit={handleModalSubmit} />
     </div>
   );
 }

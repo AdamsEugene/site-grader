@@ -4,7 +4,7 @@ interface ProgressBarProps {
   className?: string;
 }
 
-export default function AppProgressBar({
+export default function AppNavProgressBar({
   progress,
   label,
   className,
@@ -14,7 +14,7 @@ export default function AppProgressBar({
   return (
     <div className={`relative w-full bg-gray-300 ${className}`}>
       <div
-        className="h-2 transition-all duration-300 rounded-l-full"
+        className="h-2 transition-all duration-300"
         style={{
           width: `${clampedProgress}%`,
           backgroundImage: "linear-gradient(to right, #00936F, #24C953)",
