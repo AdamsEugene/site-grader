@@ -4,7 +4,6 @@ import AppNavbar from "../components/AppNavbar";
 import AppFooter from "../components/AppFooter";
 import { useNavigate, useLocation } from "react-router-dom";
 import useCategoryProducts from "../hooks/useCategoryProducts";
-import FormAppButton from "../components/FormAppButton";
 
 // Define the types for steps and their structure
 interface Step {
@@ -82,8 +81,12 @@ export default function Form1() {
   return (
     <div className="relative flex flex-col h-screen overflow-hidden">
       <AppNavbar
-        showControls
-        onNextClick={() => handleNextClick()}
+        showBackButton={activeStep > 1}
+        showNextButton={activeStep < steps.length}
+        showExitButton={activeStep === steps.length}
+        onNextClick={() =>
+          activeStep === steps.length ? navigate("/") : handleNextClick()
+        }
         onBackClick={handleBackClick}
         loaderProgress={(activeStep / steps.length) * 100}
       />
@@ -97,7 +100,7 @@ export default function Form1() {
 
           <div className="space-y-2">
             {steps[activeStep - 1]?.options.map((option, index) => (
-              <FormAppButton
+              <AppButton
                 key={index}
                 label={option}
                 className="w-full text-left"

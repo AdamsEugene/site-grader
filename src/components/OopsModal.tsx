@@ -1,6 +1,14 @@
 import AppLinkButton from "./AppLinkButton";
 
-export default function OopsModal({ visible }: { visible: boolean }) {
+export default function OopsModal({
+  visible,
+  title,
+  message,
+}: {
+  visible: boolean;
+  title?: string;
+  message?: string;
+}) {
   if (visible)
     return (
       <>
@@ -8,11 +16,12 @@ export default function OopsModal({ visible }: { visible: boolean }) {
         <div className="absolute bg-black/70 py-10 pb-20 w-full flex px-4 h-full">
           <div className="bg-emerald-800 z-10 overflow-hidden max-w-lg rounded-lg m-auto text-white">
             <div className="overflow-auto p-5">
-              <p className="text-xl font-bold mb-4">Oops.</p>
+              <p className="text-xl font-bold mb-4">{title || "Oops."}</p>
               <p className="text-sm">
-                This must be boring for you right?We have got your covered. We
+                {message ||
+                  `This must be boring for you right?We have got your covered. We
                 will send the completed reports to you through the information
-                you filled earlier. Thank you!
+                you filled earlier. Thank you!`}
               </p>
 
               <div className="pt-7">

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import Joi from "joi";
 import AppButton from "./AppButton";
 import AppInput from "./AppInput";
 import AppSelectDropdown from "./AppSelectDropdown";
@@ -10,6 +11,14 @@ export interface IModalData {
   brand_or_agency: "Agency" | "brand" | "";
   company_name: string;
   id: string;
+}
+
+interface IErrors {
+  first_name?: string;
+  last_name?: string;
+  business_email?: string;
+  brand_or_agency?: string;
+  company_name?: string;
 }
 
 export default function AppModal({
@@ -28,76 +37,68 @@ export default function AppModal({
     id: "",
   });
 
-  const [errors, setErrors] = useState({
-    first_name: "",
-    last_name: "",
-    business_email: "",
-    brand_or_agency: "",
-    company_name: "",
+  const [errors, setErrors] = useState<IErrors>({});
+
+  // Define Joi schema for the whole form
+  const schema = Joi.object({
+    first_name: Joi.string().min(1).required().messages({
+      "string.empty": "First name is required",
+    }),
+    last_name: Joi.string().min(1).required().messages({
+      "string.empty": "Last name is required",
+    }),
+    business_email: Joi.string()
+      .email({ tlds: { allow: false } })
+      .required()
+      .messages({
+        "string.empty": "Business Email is required",
+        "string.email": "Invalid email format",
+      }),
+    brand_or_agency: Joi.string().valid("brand", "Agency").required().messages({
+      "string.empty": "Please select either 'Brand' or 'Agency'",
+      "any.only": "Invalid selection",
+    }),
+    company_name: Joi.string().min(1).required().messages({
+      "string.empty": "Company name is required",
+    }),
   });
 
-  const validateField = (key: keyof IModalData, value: string) => {
-    switch (key) {
-      case "first_name":
-        return value ? "" : "Required Field"; // Returns empty string if valid
-      case "last_name":
-        return value ? "" : "Required Field";
-      case "business_email":
-        if (!value) return "Required Field";
-        return /\S+@\S+\.\S+/.test(value) ? "" : "Invalid email format"; // Proper validation
-      case "brand_or_agency":
-        return value ? "" : "Required Field";
-      case "company_name":
-        return value ? "" : "Required Field";
-      default:
-        return "";
+  // Validate form data with Joi
+  const validateForm = (): boolean => {
+    const { error } = schema.validate(values, { abortEarly: false }); // Get all validation errors at once
+
+    if (error) {
+      const newErrors = error.details.reduce<IErrors>((acc, curr) => {
+        acc[curr.path[0] as keyof IErrors] = curr.message; // Ensure the error message is mapped correctly
+        return acc;
+      }, {});
+
+      setErrors(newErrors);
+      return false;
     }
+
+    setErrors({});
+    return true;
   };
 
-  const addValue = (key: keyof IModalData, value: string) => {
-    // Update the input value
+  // Handle input change and update values
+  const handleChange = (key: keyof IModalData, value: string) => {
     setValues((prevValues) => ({
       ...prevValues,
       [key]: value,
     }));
-
-    // Validate the field and update the error state immediately
-    const errorMessage = validateField(key, value);
-    setErrors((prevErrors) => ({
-      ...prevErrors,
-      [key]: errorMessage,
-    }));
   };
 
-  const validateForm = () => {
-    const formErrors = {
-      first_name: validateField("first_name", values.first_name),
-      last_name: validateField("last_name", values.last_name),
-      business_email: validateField("business_email", values.business_email),
-      brand_or_agency: validateField("brand_or_agency", values.brand_or_agency),
-      company_name: validateField("company_name", values.company_name),
-    };
-
-    setErrors(formErrors);
-
-    return !Object.values(formErrors).some((error) => error);
-  };
-
+  // Handle form submit
   const handleSubmit = () => {
     if (validateForm()) {
-      onSubmit?.(values); // Pass the collected form values to the parent
+      onSubmit?.(values); // Pass the form values to the parent if validation passes
     }
   };
 
   useEffect(() => {
     if (!visible) {
-      setErrors({
-        first_name: "",
-        last_name: "",
-        business_email: "",
-        brand_or_agency: "",
-        company_name: "",
-      });
+      setErrors({});
     }
   }, [visible]);
 
@@ -123,7 +124,7 @@ export default function AppModal({
                       className="w-full"
                       value={values.first_name}
                       onChange={(event) =>
-                        addValue("first_name", event.target.value)
+                        handleChange("first_name", event.target.value)
                       }
                       error={errors.first_name}
                     />
@@ -135,7 +136,7 @@ export default function AppModal({
                       className="w-full"
                       value={values.last_name}
                       onChange={(event) =>
-                        addValue("last_name", event.target.value)
+                        handleChange("last_name", event.target.value)
                       }
                       error={errors.last_name}
                     />
@@ -147,7 +148,7 @@ export default function AppModal({
                   className="w-full"
                   value={values.business_email}
                   onChange={(event) =>
-                    addValue("business_email", event.target.value)
+                    handleChange("business_email", event.target.value)
                   }
                   error={errors.business_email}
                 />
@@ -158,7 +159,7 @@ export default function AppModal({
                     { label: "Brand", value: "brand" },
                     { label: "Agency", value: "Agency" },
                   ]}
-                  onChange={(value) => addValue("brand_or_agency", value)}
+                  onChange={(value) => handleChange("brand_or_agency", value)}
                   error={errors.brand_or_agency}
                 />
 
@@ -167,7 +168,7 @@ export default function AppModal({
                   className="w-full"
                   value={values.company_name}
                   onChange={(event) =>
-                    addValue("company_name", event.target.value)
+                    handleChange("company_name", event.target.value)
                   }
                   error={errors.company_name}
                 />

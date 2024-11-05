@@ -20,11 +20,13 @@ export default function LoadingPage({
   progress,
   error,
   update,
+  errorMessage,
 }: {
   progress?: string;
   error?: { type: "progress" | "report" | "status"; message: string } | null;
   update?: string | null;
   siteData?: SiteDataProp;
+  errorMessage?: string;
 }) {
   const [modalVisibility, setModalVisibility] = useState(false);
   const [oopsModalVisibility, setOopsModalVisibility] = useState(false);
@@ -99,7 +101,7 @@ export default function LoadingPage({
       </div>
 
       {/* Modals */}
-      <OopsModal visible={oopsModalVisibility} />
+      <OopsModal visible={oopsModalVisibility} message={errorMessage} />
       <AppModal visible={modalVisibility} onSubmit={handleModalSubmit} />
     </div>
   );

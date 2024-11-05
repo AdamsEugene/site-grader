@@ -1,15 +1,19 @@
 import AppButton from "./AppButton";
-import AppNavProgressBar from "./AppNavProgressBar";
+import AppProgressBar from "./AppProgressBar";
 
 interface AppNavbarProps {
-  showControls?: boolean;
+  showBackButton?: boolean;
+  showNextButton?: boolean;
+  showExitButton?: boolean;
   loaderProgress?: number;
   onBackClick?: () => void;
   onNextClick?: () => void;
 }
 
 export default function AppNavbar({
-  showControls,
+  showBackButton,
+  showNextButton,
+  showExitButton,
   loaderProgress,
   onBackClick,
   onNextClick,
@@ -17,7 +21,7 @@ export default function AppNavbar({
   return (
     <div className="bg-white border-b">
       <div className="p-3 flex justify-center sm:justify-between md:justify-between items-center">
-        {showControls && (
+        {showBackButton && (
           <AppButton
             label="Back"
             className="hidden sm:block"
@@ -25,16 +29,17 @@ export default function AppNavbar({
           />
         )}
         <h4 className="font-medium">AI Insights</h4>
-        {showControls && (
+
+        {(showNextButton || showExitButton) && (
           <AppButton
-            label="Exit"
+            label={showNextButton ? "Next" : showExitButton ? "Exit" : ""}
             className="hidden sm:block"
             onClick={onNextClick}
           />
         )}
       </div>
 
-      {loaderProgress && <AppNavProgressBar progress={loaderProgress} />}
+      {loaderProgress && <AppProgressBar progress={loaderProgress} />}
     </div>
   );
 }

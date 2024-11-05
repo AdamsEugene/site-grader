@@ -20,6 +20,7 @@ export default function Dashboard() {
   const [activeSection, setActiveSection] = useState(1);
   const [urlCopied, setUrlCopied] = useState(false);
   const [showToast, setShowToast] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const location = useLocation();
 
@@ -54,6 +55,12 @@ export default function Dashboard() {
   };
 
   useEffect(() => {
+    if (message?.process_stage === "url_validation") {
+      setErrorMessage(
+        "You have entered a wrong url, kindly check and enter the right one. thank you for using us"
+      );
+    }
+
     if (message?.share_id) {
       appendShareIdToUrl(message.share_id);
     }
@@ -75,6 +82,7 @@ export default function Dashboard() {
         error={error}
         update={update}
         siteData={location.state}
+        errorMessage={errorMessage || undefined}
       />
     );
 
