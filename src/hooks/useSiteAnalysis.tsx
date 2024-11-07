@@ -22,6 +22,7 @@ interface InsightProp {
   all_targets: { selector?: string; elementName?: string }[];
   use_targets: boolean;
   recommendation: string;
+  label: string;
   metadata: {
     rule_id: number;
     template_id: string;
