@@ -203,7 +203,7 @@ export default function Dashboard() {
                       <div key={index} className="flex flex-col p-3">
                         <div className="flex mb-2">
                           <span className="font-thin text-white bg-emerald-700 rounded-sm w-8 h-8 flex items-center justify-center">
-                            {index + 1}
+                            {insight.label}
                           </span>
                         </div>
                         <div>
