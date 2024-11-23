@@ -17,10 +17,10 @@ const AppButton = forwardRef<HTMLButtonElement, AppButtonProps>(
           primary
             ? "bg-[#08916F] border-[#08916F] text-white disabled:bg-emerald-700/50 border-0"
             : "border border-[#08916F]"
-        } disabled:bg-green-200 disabled:text-gray-400 rounded-lg p-2 px-4 cursor-pointer text-sm disabled:cursor-default ${className}`}
+        } disabled:bg-green-200 disabled:text-gray-400 rounded-lg py-2 px-4 cursor-pointer text-sm disabled:cursor-default ${className}`}
         {...props}
       >
-        <div className="flex items-center justify-center ">
+        <div className="flex items-center justify-center text-[16px] ">
           {leftIcon}
           {label}
           {rightIcon}

@@ -21,12 +21,14 @@ interface IErrors {
   company_name?: string;
 }
 
-export default function AppModal({
+export default function AppModalAudit({
   visible,
   onSubmit,
+  setIsFormFilled,
 }: {
   visible: boolean;
   onSubmit?: (values: IModalData) => void;
+  setIsFormFilled?: (isFilled: boolean) => void;
 }) {
   const [values, setValues] = useState<IModalData>({
     first_name: "",
@@ -36,7 +38,6 @@ export default function AppModal({
     company_name: "",
     id: "",
   });
-
   const [errors, setErrors] = useState<IErrors>({});
 
   // Define Joi schema for the whole form
@@ -99,6 +100,7 @@ export default function AppModal({
     } else {
       console.log("Validation failed with errors:", errors);
     }
+    setIsFormFilled?.(true);
   };
 
   useEffect(() => {
@@ -111,9 +113,14 @@ export default function AppModal({
     return (
       <>
         <div className="absolute z-10 backdrop-blur-sm bg-white/30 h-full w-full"></div>
-        <div className="absolute bg-black/70 py-10 pb-20 w-full flex px-4 h-full">
-          <div className="bg-emerald-800 z-10 overflow-hidden max-w-lg rounded-lg m-auto text-white h-auto">
-            <div className="overflow-auto h-full p-8">
+        <div className="absolute bg-black/70 w-full flex h-full">
+          <div className="bg-emerald-800 z-10 overflow-hidden md:rounded-lg max-w-lg m-auto text-white h-full md:h-auto">
+            <div className="bg-white p-4 sm:hidden">
+              <h4 className="font-medium text-[#171A1C] text-center">
+                AI Insights
+              </h4>
+            </div>
+            <div className="overflow-auto h-full p-8 mt-12">
               <p className="text-xl font-bold mb-4">Whoops, our bad.</p>
               <p className="text-sm">
                 Your audit is taking longer than usual. Enter your information
@@ -121,7 +128,7 @@ export default function AppModal({
               </p>
 
               <div className="mt-5 space-y-4">
-                <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-3">
+                <div className="flex items-center gap-2 md:space-x-3">
                   <div className="w-full">
                     <AppInput
                       label="First name"

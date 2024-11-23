@@ -34,7 +34,7 @@ export const PageTitle = ({
   description: string;
   title: string;
 }) => (
-  <div className="py-6 border-b sm:border-0">
+  <div className="py-2 md:py-6 border-b sm:border-0">
     <h1 className="text-2xl font-bold">{title}</h1>
     <p>{description}</p>
   </div>

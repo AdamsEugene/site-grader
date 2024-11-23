@@ -23,11 +23,17 @@ interface InsightProp {
   use_targets: boolean;
   recommendation: string;
   label: string;
+  coordinates: Coordinates;
   metadata: {
     rule_id: number;
     template_id: string;
   };
   created: string;
+}
+
+interface Coordinates {
+  x: number;
+  y: number;
 }
 
 // const message = {

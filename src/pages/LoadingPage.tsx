@@ -3,10 +3,11 @@ import AppNavbar from "../components/AppNavbar";
 import AppProgressBar from "../components/AppProgressBar";
 import siteIcon from "../assets/images/sitegrader_icon.png";
 import { useEffect, useState } from "react";
-import AppModal, { IModalData } from "../components/AppModal";
+import { IModalData } from "../components/AppModal";
 import { useLocation } from "react-router-dom";
 import OopsModal from "../components/OopsModal";
 import useContact from "../hooks/useContact";
+import AppModalAudit from "../components/AppModalAudit";
 // import { IContact } from "../interface/IContact";
 
 interface SiteDataProp {
@@ -19,14 +20,16 @@ interface SiteDataProp {
 export default function LoadingPage({
   progress,
   error,
-  update,
+  // update,
   errorMessage,
+  jobId,
 }: {
   progress?: string;
   error?: { type: "progress" | "report" | "status"; message: string } | null;
   update?: string | null;
   siteData?: SiteDataProp;
   errorMessage?: string;
+  jobId?: string;
 }) {
   const [modalVisibility, setModalVisibility] = useState(false);
   const [oopsModalVisibility, setOopsModalVisibility] = useState(false);
@@ -57,7 +60,7 @@ export default function LoadingPage({
   const handleModalSubmit = (values: IModalData) => {
     sendContactDetails({
       ...values,
-      id: values.business_email,
+      id: jobId || "",
       annual_revenue: location.state.average_revenue,
       products_services: location.state.product_service,
     });
@@ -87,12 +90,12 @@ export default function LoadingPage({
 
       {/* Centered Progress Bar Section */}
       <div className="flex-grow flex justify-center items-center">
-        <div className="flex flex-col items-center space-y-4 w-1/3 text-center">
+        <div className="flex flex-col items-center space-y-4 w-[90%] md:w-1/3 text-center">
           <img src={siteIcon} width={50} height={50} alt="" />
-          {error?.type === "progress" && !update && (
+          {/* {error?.type === "progress" && !update && (
             <p className="text-red-500">{error.message}</p>
           )}
-          {update && !error && <p className="text-emerald-500">{update}</p>}
+          {update && !error && <p className="text-emerald-500">{update}</p>} */}
           <AppProgressBar
             progress={progressPercentage}
             className="rounded-full overflow-hidden w-full bg-gray-300/50"
@@ -102,7 +105,8 @@ export default function LoadingPage({
 
       {/* Modals */}
       <OopsModal visible={oopsModalVisibility} message={errorMessage} />
-      <AppModal visible={modalVisibility} onSubmit={handleModalSubmit} />
+      {/* <AppModal visible={modalVisibility} onSubmit={handleModalSubmit} /> */}
+      <AppModalAudit visible={modalVisibility} onSubmit={handleModalSubmit} />
     </div>
   );
 }

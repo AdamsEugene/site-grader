@@ -61,37 +61,41 @@ export default function SiteSpeed({ pageData }: SiteSpeedProps) {
         </p>
         <div className="flex justify-between divide-x border-b">
           <div className="flex flex-col sm:flex-row p-4 sm:items-center justify-between w-full">
-            <p className="w-1/2 grow">Largest Contentful Paint (LCP)</p>
+            <p className="w-full md:w-1/2 grow">
+              Largest Contentful Paint (LCP)
+            </p>
             {/* <FcDoughnutChart size={50} className="ms-2" /> */}
             <SvgComponenent
               speed={lcpSpeed}
-              value={lcpValue ? lcpValue / 1000 : 0}
+              value={lcpValue ? parseFloat((lcpValue / 1000).toFixed(2)) : 0}
             />
           </div>
           <div className="flex flex-col sm:flex-row p-4 sm:items-center justify-between w-full">
-            <p className="w-1/2 grow">First Contentful Paint (FCP)</p>
+            <p className="w-full md:w-1/2 grow">First Contentful Paint (FCP)</p>
             {/* <FcDoughnutChart size={50} className="ms-2" /> */}
             <SvgComponenent
               speed={fcpSpeed}
-              value={fcpValue ? fcpValue / 1000 : 0}
+              value={fcpValue ? parseFloat((fcpValue / 1000).toFixed(2)) : 0}
             />
           </div>
         </div>
         <div className="flex justify-between divide-x">
           <div className="flex flex-col sm:flex-row p-4 sm:items-center justify-between w-full">
-            <p className="w-1/2 grow">Cumulative Layout Shift (CLS)</p>
+            <p className="w-full md:w-1/2 grow">
+              Cumulative Layout Shift (CLS)
+            </p>
             {/* <FcDoughnutChart size={50} className="ms-2" /> */}
             <SvgComponenent
               speed={clsSpeed}
-              value={clsValue ? clsValue / 1000 : 0}
+              value={clsValue ? parseFloat((clsValue / 1000).toFixed(2)) : 0}
             />
           </div>
           <div className="flex flex-col sm:flex-row p-4 sm:items-center justify-between w-full">
-            <p className="w-1/2 grow">Type to First Byte (TTFB)</p>
+            <p className="w-full md:w-1/2 grow">Type to First Byte (TTFB)</p>
             {/* <FcDoughnutChart size={50} className="ms-2" /> */}
             <SvgComponenent
               speed={ttfbSpeed}
-              value={ttfbValue ? ttfbValue / 1000 : 0}
+              value={ttfbValue ? parseFloat((ttfbValue / 1000).toFixed(2)) : 0}
             />
           </div>
         </div>
@@ -101,7 +105,8 @@ export default function SiteSpeed({ pageData }: SiteSpeedProps) {
         {pageData &&
           pageData.data.recommendations?.map((r, index) => (
             <div key={index} className="mb-4 text-gray-800">
-              <p className="font-bold mb-2">{index + 1 + ". " + r.title}</p>
+              {/* <p className="font-bold mb-2">{index + 1 + ". " + r.title}</p> */}
+              <p className="font-bold mb-2">{r.title}</p>
               {Array.isArray(r.recommendation) ? (
                 <ul className="list-disc ps-5">
                   {r.recommendation.map((d, index) => (

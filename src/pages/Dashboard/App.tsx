@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import AppButton from "../../components/AppButton";
 import AppNavbar2 from "../../components/AppNavbar2";
 import AppSidebar from "../../components/AppSidebar";
@@ -21,34 +21,36 @@ export default function Dashboard() {
   const [urlCopied, setUrlCopied] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-
+  const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 768);
   const location = useLocation();
-
   const { message, error, update } = useFetchAndListen();
-
   const { data, siteSpeedData, codeQualityData } = useSiteAnalysis(message);
 
-  // const siteUrl = location.state?.site_url || "https://defaultsiteurl.com";
+  // Simplify `pages` to only include necessary fields and transform recommendations
+  const simplifiedPages = pages.map((page) => ({
+    title: page.title,
+    pageNumber: page.pageNumber,
+    recommendations: page.recommendations?.map((rec) => rec.title), // Extract titles as strings
+  }));
+
   const appendShareIdToUrl = (shareId: string) => {
     const currentUrl = new URL(window.location.href);
     const params = new URLSearchParams(currentUrl.search);
 
     if (!params.has("sid")) {
       params.set("sid", shareId);
-
       const newUrl = `${currentUrl.origin}${
         currentUrl.pathname
       }?${params.toString()}`;
       window.history.replaceState({}, "", newUrl);
     }
   };
+
   const copyToClipboard = async () => {
     try {
-      // Copy the new URL to the clipboard
       await navigator.clipboard.writeText(window.location.href);
       handleShowToast();
       setUrlCopied(true);
-      // alert("Text copied to clipboard!");
     } catch (err) {
       console.error("Failed to copy: ", err);
     }
@@ -57,47 +59,71 @@ export default function Dashboard() {
   useEffect(() => {
     if (message?.process_stage === "url_validation") {
       setErrorMessage(
-        "You have entered a wrong url, kindly check and enter the right one. thank you for using us"
+        "You have entered a wrong url, kindly check and enter the right one. Thank you for using us"
       );
     }
-
+    if (message?.blocked_by_site === 1) {
+      setErrorMessage(
+        "Your site is currently blocking our services from running. Kindly disable these restrictions and try again. Thank you for using us"
+      );
+    }
     if (message?.share_id) {
       appendShareIdToUrl(message.share_id);
     }
   }, [message]);
 
+  const screenshotRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsDesktop(window.innerWidth >= 768);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+  const handleScreenshot = (x: number, y: number) => {
+    if (screenshotRef.current) {
+      screenshotRef.current.scrollTo({ top: y, left: x, behavior: "smooth" });
+    }
+  };
+
   const handleShowToast = () => {
     if (urlCopied) {
       setShowToast(true);
-
       setTimeout(() => {
         setShowToast(false);
       }, 3000);
     }
   };
-  if (!data)
+
+  if (!data) {
     return (
       <LoadingPage
         progress={message?.process_stage}
         error={error}
         update={update}
         siteData={location.state}
+        jobId={message?.id || ""}
         errorMessage={errorMessage || undefined}
       />
     );
+  }
 
   return (
     <div className="overflow-hidden h-screen pb-20">
       <AppNavbar2 onUrlCopy={copyToClipboard} urlCopied={urlCopied} />
 
-      <div className="sm:hidden w-full p-4">
+      {/* <div className="sm:hidden w-full p-4">
         <AppButton
           label="Your Site's Diagnostic"
           onClick={() => setActivePageNumber(0)}
           className="border-0 justify-between w-full px-0 font-semibold"
           leftIcon={<FaChevronLeft className="absolute left-4" />}
         />
-      </div>
+      </div> */}
 
       <div className="h-full flex w-full px-3">
         {showToast && (
@@ -114,9 +140,8 @@ export default function Dashboard() {
           </div>
         )}
         <AppSidebar
-          pages={pages}
+          pages={simplifiedPages}
           pageData={data}
-          // siteUrl={siteUrl}
           totalCodeQuality={codeQualityData?.data.site_audit.Total}
           totalInsightScore={parseInt(data.user_experience_score)}
           totalSiteSpeed={siteSpeedData?.data.psi_metrics.speedPercentage.value}
@@ -136,7 +161,7 @@ export default function Dashboard() {
           <div
             className={`${
               activePageNumber === 0 ? "hidden sm:block" : "sm:block"
-            } `}
+            }`}
           >
             <AppTitlebar
               pages={pages}
@@ -150,7 +175,19 @@ export default function Dashboard() {
             />
           </div>
 
-          <div className="h-full overflow-auto px-4 pb-40">
+          <div
+            className="h-full overflow-auto px-2 md:px-4 pb-20"
+            ref={screenshotRef}
+          >
+            <div className="sm:hidden w-full p-4 relative">
+              <AppButton
+                label="Your Site's Diagnostic"
+                onClick={() => setActivePageNumber(0)}
+                className="border-0 justify-between w-full px-0 font-semibold"
+                leftIcon={<FaChevronLeft className="absolute left-4" />}
+              />
+            </div>
+
             <PageTitle
               title={pages[activePageNumber - 1]?.title}
               description={pages[activePageNumber - 1]?.description}
@@ -159,12 +196,12 @@ export default function Dashboard() {
             <div
               className={`${
                 activePageNumber === 1 ? "md:hidden flex" : "hidden"
-              } space-x-3 font-bold mt-3`}
+              } space-x-3 font-medium mt-5`}
             >
               <AppButton
                 leftIcon={<PiStarFour className="me-2" />}
                 label="Recommendations"
-                className={`rounded-none border-0 w-full border-black ${
+                className={`rounded-none border-0 w-full border-black pl-1 ${
                   activeSection === 1 ? "border-b-2" : ""
                 }`}
                 onClick={() => setActiveSection(1)}
@@ -172,7 +209,7 @@ export default function Dashboard() {
               <AppButton
                 leftIcon={<CiImageOn className="me-2" />}
                 label="Screenshots"
-                className={`rounded-none border-0 w-full border-black ${
+                className={`rounded-none border-0 w-full border-black !mx-0 pl-1 pr-0 ${
                   activeSection === 2 ? "border-b-2" : ""
                 }`}
                 onClick={() => setActiveSection(2)}
@@ -200,14 +237,31 @@ export default function Dashboard() {
                 <div className="rounded-lg shadow divide-y">
                   {data &&
                     data.insights.map((insight, index) => (
-                      <div key={index} className="flex flex-col p-3">
-                        <div className="flex mb-2">
-                          <span className="font-thin text-white bg-emerald-700 rounded-sm w-8 h-8 flex items-center justify-center">
+                      <div
+                        onClick={
+                          isDesktop
+                            ? () =>
+                                handleScreenshot(
+                                  insight.coordinates.x,
+                                  insight.coordinates.y
+                                )
+                            : undefined
+                        }
+                        key={index}
+                        className="flex flex-col p-3 hover:bg-green-50 cursor-pointer"
+                      >
+                        <div className="flex items-center mb-2 pl-2.5 . md:pl-0 font-semibold">
+                          <span className=" md:text-white md:bg-emerald-700 rounded-sm md:w-8 md:h-8 flex items-center justify-center cursor-pointer">
                             {insight.label}
                           </span>
+                          <p className="md:hidden pl-2">
+                            {insight?.element_type}
+                          </p>
                         </div>
                         <div>
-                          <p className="font-bold">{insight?.element_type}</p>
+                          <p className="font-bold hidden md:block">
+                            {insight?.element_type}
+                          </p>
                           <p className="font-normal">
                             {insight.recommendation}
                           </p>

@@ -14,7 +14,7 @@ export default function AppNavbar2({
         <div className="flex items-center">
           <a href="/" className="cursor-pointer flex">
             <AppLogoIcon size="small" className="rounded-sm me-1" />
-            <p className="font-semibold">Heatmap Insights</p>
+            <p className="font-semibold hidden md:block">Heatmap Insights</p>
           </a>
         </div>
 

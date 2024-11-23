@@ -32,7 +32,9 @@ const ObjCodeQuality = ({
                 ))}
               </ul>
             ) : (
-              <p>{r.Explanation}</p>
+              <p>
+                <span className="pr-2">{rIndex + 1}.</span> {r.Explanation}
+              </p>
             )}
 
             {/* {r.snippets &&

@@ -38,19 +38,24 @@ export default function Home() {
     <div className="">
       <AppNavbar />
 
-      <div className="bg-green-50 py-20">
+      <div className="sm:bg-green-50 md:py-20">
         <div className="m-auto w-full max-w-md space-y-4 p-4 text-center">
-          <h1 className="text-3xl font-bold">Boost Your Site's Performance.</h1>
-          <p>
+          <h1 className="hidden sm:block text-3xl font-bold">
+            Boost Your Site's Performance.
+          </h1>
+          <p className="hidden md:block">
             Get AI-generated recommendations, benchmarked across 1,000+
             e-commerce sites, in just seconds.
           </p>
-          <p className="text-gray-400">What's your homepage?</p>
+          <p className="text-gray-400 hidden sm:block">What's your homepage?</p>
+          <h3 className="sm:hidden font-bold text-lg text-start">
+            What page on your site do you want analyzed?
+          </h3>
           <AppInput
             placeholder="https://"
             ref={inputRef}
             onChange={(event) => setUrl(event.target.value)}
-            className="w-full"
+            className="w-full py-3"
           />
           <br />
           {error && <p className="text-red-500">{error}</p>}{" "}
@@ -62,7 +67,7 @@ export default function Home() {
             disabled={url.length < 1}
             className="w-full"
           />
-          <div>
+          <div className="hidden sm:block">
             <AppLinkButton primary label="Try For FREE" to="/" />
           </div>
         </div>

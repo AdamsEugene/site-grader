@@ -71,7 +71,11 @@ export default function Form1() {
 
   // Return early if steps are still undefined
   if (!steps.length || loading) {
-    return <div>Loading...</div>; // You can return a loading spinner here while the data is being fetched
+    return (
+      <div className="h-screen w-full flex justify-center items-center">
+        Loading...
+      </div>
+    ); // You can return a loading spinner here while the data is being fetched
   }
 
   if (!loading && error) {
@@ -91,7 +95,7 @@ export default function Form1() {
         loaderProgress={(activeStep / steps.length) * 100}
       />
 
-      <div className="overflow-auto">
+      <div className="overflow-auto pb-20">
         <div className="px-3 mx-auto grow py-10 w-full max-w-sm space-y-4">
           <p className="text-sm text-gray-400">
             {activeStep} of {steps.length}
@@ -113,10 +117,12 @@ export default function Form1() {
         </div>
       </div>
 
-      <AppFooter />
-      <div className="px-3 sm:hidden mx-auto grow-1 py-3 w-full max-w-sm space-y-4">
+      <div className="hidden sm:block">
+        <AppFooter />
+      </div>
+      <div className="px-3 fixed bg-white bottom-0 sm:hidden mx-auto grow-1 py-3 w-full max-w-sm space-y-4">
         <AppButton
-          label="Exit"
+          label="Next"
           className="border-0 text-emerald-700 disabled:text-gray-400 bg-gray-200 w-full"
           onClick={() => handleNextClick()}
         />
