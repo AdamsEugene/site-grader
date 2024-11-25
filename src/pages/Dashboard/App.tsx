@@ -14,6 +14,9 @@ import pages from "../../lib/pageData";
 import useSiteAnalysis from "../../hooks/useSiteAnalysis";
 import useFetchAndListen from "../../hooks/useFetchAndListen";
 import { useLocation } from "react-router-dom";
+import AppModalAudit from "../../components/AppModalAudit";
+import { IModalData } from "../../components/AppModal";
+import useContact from "../../hooks/useContact";
 
 export default function Dashboard() {
   const [activePageNumber, setActivePageNumber] = useState(1);
@@ -25,6 +28,8 @@ export default function Dashboard() {
   const location = useLocation();
   const { message, error, update } = useFetchAndListen();
   const { data, siteSpeedData, codeQualityData } = useSiteAnalysis(message);
+
+  const [modalDataSubmitted, setModalDataSubmitted] = useState(false);
 
   // Simplify `pages` to only include necessary fields and transform recommendations
   const simplifiedPages = pages.map((page) => ({
@@ -90,6 +95,18 @@ export default function Dashboard() {
     }
   };
 
+  const { responseMessage, sendContactDetails } = useContact();
+
+  const handleModalSubmit = (values: IModalData) => {
+    sendContactDetails({
+      ...values,
+      id: message?.id || "",
+      annual_revenue: location.state.average_revenue,
+      products_services: location.state.product_service,
+    });
+    setModalDataSubmitted(true);
+  };
+
   const handleShowToast = () => {
     if (urlCopied) {
       setShowToast(true);
@@ -98,6 +115,16 @@ export default function Dashboard() {
       }, 3000);
     }
   };
+
+  useEffect(() => {
+    console.log({ modalDataSubmitted });
+  }, [modalDataSubmitted]);
+
+  useEffect(() => {
+    if (responseMessage) {
+      console.log({ responseMessage });
+    }
+  }, [responseMessage]);
 
   if (!data) {
     return (
@@ -108,6 +135,7 @@ export default function Dashboard() {
         siteData={location.state}
         jobId={message?.id || ""}
         errorMessage={errorMessage || undefined}
+        onModalDataSubmit={() => setModalDataSubmitted(true)}
       />
     );
   }
@@ -124,6 +152,16 @@ export default function Dashboard() {
           leftIcon={<FaChevronLeft className="absolute left-4" />}
         />
       </div> */}
+
+      <AppModalAudit
+        visible={!modalDataSubmitted}
+        onSubmit={handleModalSubmit}
+        message={{
+          title: "Unlock your full audit",
+          description:
+            "Enter your details to access comprehensive insights and personalized recommendations to boost your site's performance.",
+        }}
+      />
 
       <div className="h-full flex w-full px-3">
         {showToast && (

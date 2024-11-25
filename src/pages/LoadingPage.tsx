@@ -23,6 +23,7 @@ export default function LoadingPage({
   // update,
   errorMessage,
   jobId,
+  onModalDataSubmit,
 }: {
   progress?: string;
   error?: { type: "progress" | "report" | "status"; message: string } | null;
@@ -30,6 +31,7 @@ export default function LoadingPage({
   siteData?: SiteDataProp;
   errorMessage?: string;
   jobId?: string;
+  onModalDataSubmit?: () => void;
 }) {
   const [modalVisibility, setModalVisibility] = useState(false);
   const [oopsModalVisibility, setOopsModalVisibility] = useState(false);
@@ -65,6 +67,7 @@ export default function LoadingPage({
       products_services: location.state.product_service,
     });
     setModalVisibility(false);
+    onModalDataSubmit?.();
   };
 
   const [progressStages, setProgressStages] = useState<string[]>([]);

@@ -25,10 +25,12 @@ export default function AppModalAudit({
   visible,
   onSubmit,
   setIsFormFilled,
+  message,
 }: {
   visible: boolean;
   onSubmit?: (values: IModalData) => void;
   setIsFormFilled?: (isFilled: boolean) => void;
+  message?: { title: string; description: string };
 }) {
   const [values, setValues] = useState<IModalData>({
     first_name: "",
@@ -112,19 +114,21 @@ export default function AppModalAudit({
   if (visible)
     return (
       <>
-        <div className="absolute z-10 backdrop-blur-sm bg-white/30 h-full w-full"></div>
+        <div className="absolute z-30 backdrop-blur-sm bg-white/30 h-full w-full"></div>
         <div className="absolute bg-black/70 w-full flex h-full">
-          <div className="bg-emerald-800 z-10 overflow-hidden md:rounded-lg max-w-lg m-auto text-white h-full md:h-auto">
+          <div className="bg-emerald-800 z-30 overflow-hidden md:rounded-lg max-w-lg m-auto text-white h-full md:h-auto">
             <div className="bg-white p-4 sm:hidden">
               <h4 className="font-medium text-[#171A1C] text-center">
                 AI Insights
               </h4>
             </div>
-            <div className="overflow-auto h-full p-8 mt-12">
-              <p className="text-xl font-bold mb-4">Whoops, our bad.</p>
+            <div className="overflow-auto h-full p-10">
+              <p className="text-xl font-bold mb-4 capitalize">
+                {message?.title || "Whoops, our bad"}.
+              </p>
               <p className="text-sm">
-                Your audit is taking longer than usual. Enter your information
-                below and we’ll email you the audit when it’s ready.
+                {message?.description ||
+                  "Your audit is taking longer than usual. Enter your information below and we’ll email you the audit when it’s ready."}
               </p>
 
               <div className="mt-5 space-y-4">
