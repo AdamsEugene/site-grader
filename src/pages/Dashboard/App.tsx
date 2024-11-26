@@ -22,7 +22,7 @@ export default function Dashboard() {
   const [activePageNumber, setActivePageNumber] = useState(1);
   const [activeSection, setActiveSection] = useState(1);
   const [urlCopied, setUrlCopied] = useState(false);
-  const [showToast, setShowToast] = useState(false);
+  const [showToast, setShowToast] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 768);
   const location = useLocation();
@@ -54,7 +54,7 @@ export default function Dashboard() {
   const copyToClipboard = async () => {
     try {
       await navigator.clipboard.writeText(window.location.href);
-      handleShowToast();
+      handleShowToast("URL copied to clipboard");
       setUrlCopied(true);
     } catch (err) {
       console.error("Failed to copy: ", err);
@@ -110,11 +110,11 @@ export default function Dashboard() {
     setModalDataSubmitted(true);
   };
 
-  const handleShowToast = () => {
-    if (urlCopied) {
-      setShowToast(true);
+  const handleShowToast = (message: string) => {
+    if (message) {
+      setShowToast(message);
       setTimeout(() => {
-        setShowToast(false);
+        setShowToast("");
       }, 3000);
     }
   };
@@ -167,14 +167,11 @@ export default function Dashboard() {
       />
 
       <div className="h-full flex w-full px-3">
-        {showToast && (
+        {showToast.length > 0 && (
           <div className="absolute right-4 z-10 bg-brandGreen text-sm rounded-md bottom-2 py-3 px-5 text-white">
             <div className="flex items-center justify-between">
-              <span className="font-bold mr-12">Url Copied to Clipboard</span>
-              <span
-                className="cursor-pointer"
-                onClick={() => setShowToast(false)}
-              >
+              <span className="font-bold mr-12">{showToast}</span>
+              <span className="cursor-pointer" onClick={() => setShowToast("")}>
                 X
               </span>
             </div>
@@ -311,7 +308,14 @@ export default function Dashboard() {
                     ))}
                 </div>
 
-                <Feedback />
+                <Feedback
+                  jobId={data.id}
+                  onFeedbackSelect={(_, isFeedbackSent) =>
+                    isFeedbackSent
+                      ? handleShowToast("Thank you for your feedback!")
+                      : console.log(isFeedbackSent)
+                  }
+                />
               </div>
             </div>
 
@@ -322,6 +326,7 @@ export default function Dashboard() {
             >
               <CodeQuality pageData={codeQualityData} />
               <Feedback
+                jobId={data.id}
                 onFeedbackSelect={(feedback) => console.log(feedback)}
               />
             </div>

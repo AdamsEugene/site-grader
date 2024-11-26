@@ -1,22 +1,24 @@
 import { MdCheck, MdClose } from "react-icons/md";
 import AppButton from "./AppButton";
 import useFeedBack from "../hooks/useFeedBack";
-import useSiteAnalysis from "../hooks/useSiteAnalysis";
-import IMessageProp from "../interface/IMessageProp";
+// import useSiteAnalysis from "../hooks/useSiteAnalysis";
+// import IMessageProp from "../interface/IMessageProp";
 // import { IFeedBack } from "../interface/IFeedBack";
 
 const Feedback = ({
   onFeedbackSelect,
+  jobId,
 }: {
-  onFeedbackSelect?: (ans: "yes" | "no") => void;
+  onFeedbackSelect?: (ans: "yes" | "no", isFeedbackSent?: boolean) => void;
+  jobId: string;
 }) => {
-  const message: IMessageProp | null = null; // Replace with the appropriate message
-  const { data } = useSiteAnalysis(message);
-  const { responseMessage, errorMessage, sendFeedBack } = useFeedBack();
+  // const message: IMessageProp | null = null; // Replace with the appropriate message
+  // // const { data } = useSiteAnalysis(message);
+  const { errorMessage, sendFeedBack } = useFeedBack();
   const handleFeedbackSelect = async (ans: "yes" | "no") => {
     // Prepare the feedback payload
     const feedbackPayload = {
-      id: data?.id ?? undefined,
+      id: jobId,
       helpful: ans === "yes",
     };
 
@@ -25,11 +27,10 @@ const Feedback = ({
       await sendFeedBack(feedbackPayload);
 
       // Notify the parent about the selected option (if provided)
-      onFeedbackSelect?.(ans);
+      onFeedbackSelect?.(ans, true);
     } catch (error) {
       console.error("Failed to send feedback:", error);
     }
-    console.log(responseMessage);
   };
   return (
     <div className="mt-5 flex items-center gap-2 justify-around">
@@ -49,11 +50,11 @@ const Feedback = ({
         />
       </div>
       {/* Display feedback response or error message */}
-      {responseMessage && (
+      {/* {responseMessage && (
         <p className="text-green-700 text-sm mt-2">
           Thank you for your feedback!
         </p>
-      )}
+      )} */}
       {errorMessage && (
         <p className="text-red-700 text-sm mt-2">{errorMessage}</p>
       )}
