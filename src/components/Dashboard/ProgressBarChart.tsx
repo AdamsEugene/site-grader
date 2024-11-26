@@ -43,7 +43,7 @@ const ProgressBarChart: React.FC<ProgressBarProps> = ({
   ));
 
   return (
-    <div className="relative w-full max-w-lg mx-auto hover:bg-brandGreen hover:p-1 hover:rounded-md transition-all duration-200 cursor-pointer">
+    <div className="relative w-full max-w-lg mx-auto hover:bg-brandGreen p-2 transition-all duration-200 cursor-pointer">
       <div className="flex justify-between items-center mb-2">
         <p className={labelClassName}>{label}</p>
         <p className="text-sm text-white-600">

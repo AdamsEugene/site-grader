@@ -13,4 +13,5 @@ export default interface IMessageProp {
   site_audit_s3_uri?: string;
   share_id?: string;
   blocked_by_site: number;
+  email_status: number;
 }

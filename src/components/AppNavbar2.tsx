@@ -22,7 +22,7 @@ export default function AppNavbar2({
           <AppButton
             label={urlCopied ? "Copied" : "Copy URL to Clipboard"}
             onClick={onUrlCopy}
-            className="border-1 border-emerald-700 text-emerald-700 font-semibold bg-transparent me-2 w-[200px]"
+            className="border-1 border-emerald-700 text-emerald-700 font-semibold bg-transparent me-2 w-[200px] whitespace-nowrap"
           />{" "}
           <a
             href="https://www.heatmap.com/pricing"

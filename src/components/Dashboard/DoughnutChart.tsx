@@ -237,7 +237,7 @@ const DoughnutChart: React.FC<DoughnutChartProps> = ({
           className={`${labelClassName}`}
           style={{ fontSize: "42px", fontWeight: 600 }}
         >
-          {orangeValue}
+          {Math.floor(orangeValue)}{" "}
         </span>
 
         <span style={{ fontSize: "14px", fontWeight: "medium" }}>

@@ -75,6 +75,9 @@ export default function Dashboard() {
     if (message?.share_id) {
       appendShareIdToUrl(message.share_id);
     }
+    if (message?.email_status === 1) {
+      setModalDataSubmitted(true);
+    }
   }, [message]);
 
   const screenshotRef = useRef<HTMLDivElement | null>(null);

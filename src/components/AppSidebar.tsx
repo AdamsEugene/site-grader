@@ -125,6 +125,9 @@ const AppSidebar: React.FC<AppSidebarProps> = React.memo(
 
           <div className="hidden sm:block overflow-hidden w-full rounded-lg">
             <div className="sm:bg-[#08916F1A] relative w-full flex flex-col sm:border-b-2 sm:border-brandGreen py-4 gap-y-4">
+              <h2 className="pb-4 border-b border-brandGreen">
+                Comparative Score
+              </h2>
               <h4 className="text-white text-center text-[18px] font-semibold">
                 HOMEPAGE
               </h4>
