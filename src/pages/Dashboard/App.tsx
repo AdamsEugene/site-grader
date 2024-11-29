@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import AppButton from "../../components/AppButton";
 import AppNavbar2 from "../../components/AppNavbar2";
 import AppSidebar from "../../components/AppSidebar";
@@ -17,6 +17,7 @@ import { useLocation } from "react-router-dom";
 import AppModalAudit from "../../components/AppModalAudit";
 import { IModalData } from "../../components/AppModal";
 import useContact from "../../hooks/useContact";
+import useServiceRevenue from "../../hooks/useServiceRevenue";
 
 export default function Dashboard() {
   const [activePageNumber, setActivePageNumber] = useState(1);
@@ -128,6 +129,30 @@ export default function Dashboard() {
       console.log({ responseMessage });
     }
   }, [responseMessage]);
+
+  const {
+    sendData,
+    error: serviceRevenueError,
+    isSuccess,
+  } = useServiceRevenue();
+
+  // Memoize sendData to prevent unnecessary re-renders
+  const memoizedSendData = useCallback(sendData, [sendData]);
+
+  useEffect(() => {
+    if (data) {
+      memoizedSendData({
+        id: data.id,
+        annual_revenue: location.state.average_revenue,
+        products_services: location.state.product_service,
+      });
+    }
+  }, [data, location.state, memoizedSendData]);
+
+  useEffect(() => {
+    if (serviceRevenueError) console.log(serviceRevenueError);
+    if (isSuccess) console.log("Revenue and service data sent");
+  }, [serviceRevenueError, isSuccess]);
 
   if (!data) {
     return (
