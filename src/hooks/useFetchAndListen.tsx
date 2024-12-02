@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 import IMessageProp from "../interface/IMessageProp";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
+import useServiceRevenue from "./useServiceRevenue";
 
 interface FetchDataResponse {
   jobId: string;
@@ -41,6 +42,14 @@ const useFetchAndListen = () => {
   //   }
   // }, []);
 
+  const { sendData, error: serviceRevenueError } = useServiceRevenue();
+
+  const memoizedSendData = useCallback(sendData, [sendData]);
+
+  useEffect(() => {
+    if (serviceRevenueError) console.log("Service Revenue Error");
+  }, [serviceRevenueError]);
+
   const getJobId = useCallback(async () => {
     setIsLoading(true);
     if (!bodyData) return;
@@ -59,6 +68,14 @@ const useFetchAndListen = () => {
       }
 
       const responseData: FetchDataResponse = await response.json();
+      if (responseData && responseData.status === 0) {
+        memoizedSendData({
+          id: responseData.jobId,
+          annual_revenue: location.state.average_revenue,
+          products_services: location.state.product_service,
+        });
+      }
+
       setValidationData(responseData);
     } catch (error) {
       console.error("Fetch error:", error);
@@ -69,7 +86,7 @@ const useFetchAndListen = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [bodyData]);
+  }, [bodyData, memoizedSendData, location]);
 
   const fetchReportsData = useCallback(
     async (id: string) => {
@@ -127,7 +144,7 @@ const useFetchAndListen = () => {
         setUpdate("Getting insight...");
         setError(null);
         setMessage(parsedData);
-        console.log(parsedData);
+        // console.log(parsedData);
         if (parsedData?.status === "failed") {
           eventSource.close();
           setError({
@@ -171,7 +188,7 @@ const useFetchAndListen = () => {
         return cleanupListener;
       } else if (validationData.jobId && validationData.status === 1) {
         fetchReportsData(validationData.jobId);
-        console.log(validationData.jobId, "&&", validationData.status === 1);
+        // console.log(validationData.jobId, "&&", validationData.status === 1);
       }
     }
   }, [validationData, fetchDataAndListen, fetchReportsData, shareId]);

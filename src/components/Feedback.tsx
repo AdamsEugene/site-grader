@@ -10,7 +10,7 @@ const Feedback = ({
   jobId,
 }: {
   onFeedbackSelect?: (ans: "yes" | "no", isFeedbackSent?: boolean) => void;
-  jobId: string;
+  jobId?: string;
 }) => {
   // const message: IMessageProp | null = null; // Replace with the appropriate message
   // // const { data } = useSiteAnalysis(message);
