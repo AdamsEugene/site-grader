@@ -31,7 +31,6 @@ export default function Dashboard() {
 
   const [modalDataSubmitted, setModalDataSubmitted] = useState(false);
 
-  // Simplify `pages` to only include necessary fields and transform recommendations
   const simplifiedPages = pages.map((page) => ({
     title: page.title,
     pageNumber: page.pageNumber,
